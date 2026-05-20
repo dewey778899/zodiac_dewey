@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompatibilityService {
 
-    private final ClaudeService claudeService;
+    private final AiChatService aiChatService;
     private final SoulmateReportRepository repository;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SecureRandom rng = new SecureRandom();
@@ -39,7 +39,7 @@ public class CompatibilityService {
 
         String systemPrompt = buildSystemPrompt();
         String userPrompt = buildUserPrompt(request, triA, triB);
-        String raw = claudeService.generate(systemPrompt, userPrompt);
+        String raw = aiChatService.generate(systemPrompt, userPrompt);
 
         CompatibilityResponse response = parseResponse(raw, triA, triB);
 
@@ -215,7 +215,7 @@ public class CompatibilityService {
                     .zodiacB(toZodiacInfo(triB))
                     .build();
         } catch (Exception e) {
-            log.error("解析 Claude 响应失败,raw 前 500 字符: {}",
+            log.error("解析 AI 响应失败,raw 前 500 字符: {}",
                     raw.length() > 500 ? raw.substring(0, 500) : raw, e);
             throw new RuntimeException("报告生成异常,请重试", e);
         }

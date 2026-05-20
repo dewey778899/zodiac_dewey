@@ -18,6 +18,9 @@ logs/
 .env.local
 *.env
 
+# Local runtime data
+backend/data/
+
 # Build output
 dist/
 build/

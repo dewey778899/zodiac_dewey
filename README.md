@@ -1,6 +1,6 @@
 # 🌙 小登哥的灵魂合盘
 
-> 一个用 Claude AI 生成深度星座合盘报告的 H5 应用,**小登哥出品**。
+> 一个用 DeepSeek 生成深度星座合盘报告的 H5 应用,**小登哥出品**。
 > 用户输入双方信息(姓名/生日/出生时间/出生地),AI 生成 4000+ 字深度合盘报告。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -9,7 +9,7 @@
 
 ## ✨ 功能特性
 
-- 🎴 **真实 AI 报告**:接入 Claude 官方 API,每份报告由 AI 实时生成,4000-5000 字深度内容
+- 🎴 **真实 AI 报告**:接入 DeepSeek API,每份报告由 AI 实时生成,4000-5000 字深度内容
 - 🌟 **三大星座**:不只算太阳星座,还有月亮星座、上升星座(基于出生时间)
 - 💎 **珍藏锦囊**:6 条可直接收藏的精华相处建议,易记易用
 - 🆔 **独一无二编号**:每份报告唯一编号(如 `N° SASC-260520-RT93`),仪式感拉满
@@ -28,8 +28,8 @@
 |---|---|
 | 前端 | 纯 HTML + Canvas 2D API,无任何前端框架,单文件 |
 | 后端 | Spring Boot 3.2 + Java 17 |
-| 数据库 | MySQL 8 + JPA |
-| AI | Claude Opus 4.5(可换成其他模型) |
+| 数据库 | H2 / MySQL + JPA |
+| AI | DeepSeek Chat(可换成其他 OpenAI 兼容模型) |
 | 限流 | Caffeine 内存缓存(无需 Redis) |
 | PDF | jsPDF + 原生 Canvas |
 | 部署 | Nginx + systemd / Docker |
@@ -45,7 +45,7 @@ zodiac_dewey/
 │   └── src/main/
 │       ├── java/com/zodiac/api/
 │       │   ├── controller/    REST 接口
-│       │   ├── service/       业务(Claude 调用、限流、报告生成)
+│       │   ├── service/       业务(AI 调用、限流、报告生成)
 │       │   ├── entity/        数据库实体
 │       │   ├── repository/    JPA 仓库
 │       │   ├── dto/           请求/响应
@@ -79,8 +79,7 @@ zodiac_dewey/
 
 - JDK 17+
 - Maven 3.8+
-- MySQL 8.0+
-- Claude API Key([这里申请](https://console.anthropic.com))
+- DeepSeek API Key([这里申请](https://platform.deepseek.com))
 
 ### 步骤
 
@@ -91,15 +90,15 @@ cd zodiac_dewey
 
 # 2. 配置环境变量
 cp .env.example .env
-vim .env   # 填入 CLAUDE_API_KEY、数据库密码等
+vim .env   # 填入 AI_API_KEY 等配置
 
-# 3. 初始化数据库(首次)
-bash scripts/init_db.sh
-
-# 4. 启动后端
+# 3. 启动后端
 bash scripts/start_dev.sh
 
-# 5. 前端访问
+# Windows PowerShell
+powershell -ExecutionPolicy Bypass -File .\scripts\start_dev.ps1
+
+# 4. 前端访问
 # 方法 A:开新终端,跑静态服务
 cd frontend && python3 -m http.server 5173
 # 浏览器打开 http://localhost:5173
@@ -197,15 +196,15 @@ bash scripts/deploy.sh
 
 ## 💰 成本估算
 
-| 用量级别 | 每日次数 | 月成本(Claude Opus 4.5) |
+| 用量级别 | 每日次数 | 月成本(DeepSeek) |
 |---|---|---|
 | 试水期 | 50 / 日 | ¥600 / 月 |
 | 小爆款 | 200 / 日(默认上限) | ¥2400 / 月 |
 | 大爆款 | 1000 / 日(需调整限流) | ¥12000 / 月 |
 
-**省钱建议**:跑通后切换到 `claude-haiku-4-5` 或 `claude-sonnet-4-5`,成本降低 5-10 倍。
+**省钱建议**:先用 `deepseek-chat` 跑通，如果更追求推理质量，可以改成 `deepseek-reasoner`。
 
-修改 `.env` 里的 `CLAUDE_MODEL=claude-haiku-4-5-20251001`,重启即可。
+修改 `.env` 里的 `AI_MODEL=deepseek-reasoner`,重启即可。
 
 ---
 
