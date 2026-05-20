@@ -1,0 +1,31 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Maven
+backend/target/
+backend/.mvn/
+*.class
+
+# Logs
+*.log
+logs/
+
+# Env files(密钥不能进 Git!)
+.env
+.env.local
+*.env
+
+# Build output
+dist/
+build/
+out/
+
+# OS
+Thumbs.db
+
+# Backup
+*.bak
+*~

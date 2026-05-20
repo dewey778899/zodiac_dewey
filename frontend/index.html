@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>灵魂合盘 · 你和 TA 的缘分密码 · 小登哥出品</title>
+
+<!-- 字体:思源宋体(报告主体)+ 玉ぴょん(标题装饰) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+<!-- jsPDF:生成 PDF(分享图用原生 Canvas) -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Noto Serif SC", "Songti SC", "Source Han Serif SC", -apple-system, BlinkMacSystemFont, "PingFang SC", serif;
+    -webkit-font-smoothing: antialiased;
+    color: #3d2a35;
+    line-height: 1.75;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #fff5f0 0%, #fde4ea 35%, #f4e0f5 70%, #e8e0f7 100%);
+    min-height: 100vh;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; }
+  input, select { font-family: inherit; }
+
+  :root {
+    --peach: #ffb5a7;
+    --peach-deep: #ff8b7a;
+    --peach-dark: #e56b5c;
+    --cream: #fff5ec;
+    --lilac: #c8b6e2;
+    --lilac-deep: #9b7fc7;
+    --lilac-dark: #7d5fb3;
+    --gold: #c9a36b;
+    --gold-light: #e6c896;
+    --ink: #3d2a35;
+    --ink-light: #6b4f60;
+    --ink-soft: #9a7a8d;
+    --shadow-soft: 0 8px 32px rgba(255, 139, 122, 0.15);
+    --shadow-card: 0 12px 40px rgba(155, 127, 199, 0.12);
+    --shadow-deep: 0 20px 60px rgba(155, 127, 199, 0.25);
+  }
+
+  /* ============ Background ============ */
+  .bg-deco { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .bg-deco::before, .bg-deco::after {
+    content: ""; position: absolute; border-radius: 50%;
+    filter: blur(60px); opacity: 0.5;
+  }
+  .bg-deco::before {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #ffb5a7, transparent 70%);
+    top: -100px; right: -100px;
+    animation: float1 12s ease-in-out infinite;
+  }
+  .bg-deco::after {
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, #c8b6e2, transparent 70%);
+    bottom: -80px; left: -80px;
+    animation: float2 15s ease-in-out infinite;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-30px,40px);} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(40px,-30px);} }
+
+  .star { position: absolute; color: #ffd4a3; opacity: 0.6; animation: twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100%{opacity:0.3;transform:scale(1);} 50%{opacity:0.8;transform:scale(1.2);} }
+
+  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 32px 20px 60px; min-height: 100vh; }
+
+  
+
+  .page { animation: fadeIn 0.5s ease-out; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+
+  /* ============ Hero ============ */
+  .hero { text-align: center; margin-bottom: 36px; }
+  .hero-tag {
+    display: inline-block; padding: 6px 14px;
+    background: rgba(255,181,167,0.2); border: 1px solid rgba(255,139,122,0.3);
+    border-radius: 100px; font-size: 12px; color: var(--peach-deep);
+    letter-spacing: 2px; margin-bottom: 16px;
+    font-family: "Cormorant Garamond", "Noto Serif SC", serif;
+    font-weight: 600;
+  }
+  .hero-title {
+    font-size: 36px; font-weight: 900;
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: 8px; line-height: 1.3; letter-spacing: 2px;
+    font-family: "Noto Serif SC", serif;
+  }
+  .hero-sub { font-size: 14px; color: var(--ink-light); line-height: 1.8; }
+  .hero-deco { font-size: 24px; margin: 16px 0; letter-spacing: 12px; color: var(--gold); }
+
+  .by-line {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 12px; color: var(--ink-soft);
+    letter-spacing: 4px; margin-top: 8px;
+  }
+  .by-line .name { color: var(--gold); font-weight: 600; font-style: italic; }
+
+  /* ============ Card ============ */
+  .card {
+    background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.6); border-radius: 24px; padding: 24px;
+    box-shadow: var(--shadow-card); margin-bottom: 20px;
+  }
+
+  .person-section { margin-bottom: 24px; }
+  .person-section:last-child { margin-bottom: 0; }
+  .person-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 16px; font-weight: 700; color: var(--peach-deep); margin-bottom: 16px;
+  }
+  .person-title.purple { color: var(--lilac-deep); }
+  .person-title span.dot { width: 8px; height: 8px; background: currentColor; border-radius: 50%; }
+
+  .field { margin-bottom: 14px; }
+  .field-label { display: block; font-size: 13px; color: var(--ink-light); margin-bottom: 6px; font-weight: 500; }
+  .field-label .opt { color: #c0a8bb; font-weight: normal; font-size: 11px; }
+
+  .input, .select {
+    width: 100%; padding: 12px 14px; font-size: 15px;
+    border: 1.5px solid rgba(255,181,167,0.3); border-radius: 12px;
+    background: rgba(255,255,255,0.6); color: var(--ink);
+    transition: all 0.2s; outline: none; -webkit-appearance: none; appearance: none;
+    font-family: inherit;
+  }
+  .input:focus, .select:focus {
+    border-color: var(--peach-deep); background: white;
+    box-shadow: 0 0 0 4px rgba(255,181,167,0.15);
+  }
+  .input::placeholder { color: #c0a8bb; }
+
+  .gender-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gender-btn {
+    padding: 10px; border: 1.5px solid rgba(255,181,167,0.3); border-radius: 12px;
+    background: rgba(255,255,255,0.6); color: var(--ink-light); font-size: 14px; transition: all 0.2s;
+  }
+  .gender-btn.active {
+    border-color: var(--peach-deep);
+    background: linear-gradient(135deg, #ffb5a7, #ff8b7a);
+    color: white; font-weight: 600; box-shadow: var(--shadow-soft);
+  }
+  .gender-btn.active.female {
+    background: linear-gradient(135deg, #c8b6e2, #9b7fc7);
+  }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .quick-fill { display: none; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .quick-fill.show { display: flex; }
+  .quick-fill-btn {
+    padding: 5px 10px; font-size: 11px;
+    background: rgba(155,127,199,0.1); color: var(--lilac-deep);
+    border-radius: 100px; border: 1px solid rgba(155,127,199,0.3);
+  }
+  .quick-fill-btn:active { background: rgba(155,127,199,0.25); }
+
+  .submit-btn {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    color: white; font-size: 16px; font-weight: 700; border-radius: 16px;
+    letter-spacing: 4px; box-shadow: 0 8px 24px rgba(155,127,199,0.3);
+    transition: all 0.2s; margin-top: 8px;
+  }
+  .submit-btn:active { transform: translateY(2px); box-shadow: 0 4px 12px rgba(155,127,199,0.3); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ============ Loading ============ */
+  .loading { text-align: center; padding: 80px 20px; }
+  .loading-orb {
+    width: 80px; height: 80px; margin: 0 auto 30px; border-radius: 50%;
+    background: conic-gradient(from 0deg, #ff8b7a, #ffb5a7, #c8b6e2, #9b7fc7, #ff8b7a);
+    animation: spin 2s linear infinite; position: relative;
+  }
+  .loading-orb::after {
+    content: ""; position: absolute; inset: 8px;
+    background: linear-gradient(135deg, #fff5f0, #fde4ea); border-radius: 50%;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .loading-sub { font-size: 13px; color: var(--ink-light); margin-bottom: 24px; }
+  .loading-tips {
+    font-size: 13px; color: var(--lilac-deep);
+    background: rgba(255,255,255,0.5); padding: 12px 16px; border-radius: 12px;
+    display: inline-block; animation: tipsFade 4s ease-in-out infinite;
+  }
+  @keyframes tipsFade { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+
+  /* ============ Report COVER (珍藏感升级核心) ============ */
+  .cover {
+    position: relative;
+    background:
+      radial-gradient(ellipse at top, rgba(255, 200, 180, 0.4), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(200, 182, 226, 0.5), transparent 60%),
+      linear-gradient(170deg, #fff5f0 0%, #fde4ea 40%, #f4e0f5 70%, #e8e0f7 100%);
+    border-radius: 28px;
+    padding: 48px 28px 36px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-deep);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+  }
+  /* 装饰花纹角落 */
+  .cover-corner {
+    position: absolute; width: 60px; height: 60px;
+    border: 1.5px solid var(--gold);
+    opacity: 0.4;
+  }
+  .cover-corner.tl { top: 14px; left: 14px; border-right: none; border-bottom: none; border-top-left-radius: 12px; }
+  .cover-corner.tr { top: 14px; right: 14px; border-left: none; border-bottom: none; border-top-right-radius: 12px; }
+  .cover-corner.bl { bottom: 14px; left: 14px; border-right: none; border-top: none; border-bottom-left-radius: 12px; }
+  .cover-corner.br { bottom: 14px; right: 14px; border-left: none; border-top: none; border-bottom-right-radius: 12px; }
+  /* 流星 */
+  .cover-shine {
+    position: absolute; width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    top: 30%; left: -20px;
+    transform: rotate(-25deg); opacity: 0.6;
+    animation: shineMove 4s ease-in-out infinite;
+  }
+  @keyframes shineMove {
+    0%, 100% { transform: translateX(0) rotate(-25deg); opacity: 0; }
+    50% { transform: translateX(400px) rotate(-25deg); opacity: 0.8; }
+  }
+  .cover-emblem {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .cover-emblem-text {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 6px;
+    color: var(--gold); font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .cover-emblem-deco {
+    font-size: 14px; letter-spacing: 8px; color: var(--gold-light);
+  }
+  .cover-zodiac-row {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 28px 0 24px;
+  }
+  .cover-zodiac {
+    text-align: center;
+  }
+  .cover-zodiac-icon {
+    font-size: 32px;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 2px 4px rgba(201, 163, 107, 0.3));
+  }
+  .cover-zodiac-name {
+    font-family: "Cormorant Garamond", "Noto Serif SC", serif;
+    font-size: 12px; color: var(--ink-light); letter-spacing: 2px;
+    margin-bottom: 2px;
+  }
+  .cover-zodiac-person {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    font-family: "Noto Serif SC", serif;
+  }
+  .cover-heart {
+    font-size: 28px;
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: heartBeat 2s ease-in-out infinite;
+  }
+  @keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  .cover-title-cn {
+    text-align: center;
+    font-family: "Noto Serif SC", serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--ink); letter-spacing: 6px;
+    margin-bottom: 6px;
+  }
+  .cover-title-en {
+    text-align: center;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 13px; color: var(--ink-soft);
+    letter-spacing: 4px; font-style: italic;
+    margin-bottom: 20px;
+  }
+  .cover-score-wrap {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+  }
+  .cover-score-wrap::before, .cover-score-wrap::after {
+    content: "✦";
+    position: absolute; top: 50%; transform: translateY(-50%);
+    color: var(--gold); opacity: 0.5; font-size: 12px;
+  }
+  .cover-score-wrap::before { left: 20%; }
+  .cover-score-wrap::after { right: 20%; }
+  .cover-score {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 80px; font-weight: 700;
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1; letter-spacing: -2px;
+  }
+  .cover-score-unit {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 24px; color: var(--ink-soft); margin-left: 4px;
+  }
+  .cover-score-label {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; color: var(--ink-soft);
+    letter-spacing: 4px; margin-top: 4px;
+  }
+  .cover-type-row {
+    text-align: center;
+    margin: 20px 0 14px;
+  }
+  .cover-type {
+    display: inline-block;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+    border: 1px solid var(--gold-light);
+    border-radius: 100px;
+    font-size: 13px; font-weight: 700;
+    color: var(--lilac-dark); letter-spacing: 2px;
+  }
+  .cover-tagline {
+    text-align: center;
+    font-size: 14px; color: var(--ink);
+    line-height: 1.9; padding: 0 12px;
+    font-style: italic;
+    font-family: "Noto Serif SC", serif;
+    position: relative;
+  }
+  .cover-tagline::before, .cover-tagline::after {
+    content: "\"";
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px; color: var(--gold);
+    opacity: 0.5;
+    line-height: 0;
+  }
+  .cover-tagline::before { margin-right: 4px; vertical-align: -10px; }
+  .cover-tagline::after { margin-left: 4px; vertical-align: -10px; }
+  .cover-meta {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(201, 163, 107, 0.3);
+    text-align: center;
+  }
+  .cover-meta-id {
+    font-family: "Cormorant Garamond", "Courier New", monospace;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 2px; margin-bottom: 6px;
+  }
+  .cover-meta-date {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; color: var(--ink-soft);
+    letter-spacing: 3px;
+  }
+  .cover-by {
+    margin-top: 16px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .cover-by .name {
+    font-style: italic; font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  /* ============ Chapter ============ */
+  .chapter {
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+    border-radius: 22px; padding: 26px 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow-card);
+    animation: chapterIn 0.6s ease-out backwards;
+    position: relative;
+  }
+  .chapter:nth-child(1) { animation-delay: 0.05s; }
+  .chapter:nth-child(2) { animation-delay: 0.1s; }
+  .chapter:nth-child(3) { animation-delay: 0.15s; }
+  .chapter:nth-child(4) { animation-delay: 0.2s; }
+  .chapter:nth-child(5) { animation-delay: 0.25s; }
+  .chapter:nth-child(6) { animation-delay: 0.3s; }
+  .chapter:nth-child(7) { animation-delay: 0.35s; }
+  @keyframes chapterIn { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+
+  .chapter-num {
+    position: absolute; top: 20px; right: 24px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 36px; font-weight: 300; color: var(--gold);
+    opacity: 0.3; line-height: 1;
+    font-style: italic;
+  }
+  .chapter-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    padding-bottom: 14px; border-bottom: 1px dashed rgba(255,139,122,0.2);
+  }
+  .chapter-emoji { font-size: 24px; }
+  .chapter-title { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: 0.5px; }
+  .chapter-body {
+    font-size: 14.5px; line-height: 2; color: #5c4a56;
+    white-space: pre-wrap; word-wrap: break-word;
+    font-family: "Noto Serif SC", serif;
+  }
+  .chapter-body strong { color: var(--peach-deep); font-weight: 700; }
+
+  /* ============ Essence Chapter (精华相处建议)============ */
+  .essence {
+    background: linear-gradient(165deg, #fff9f5 0%, #fef0f0 50%, #f6ebf7 100%);
+    border-radius: 22px;
+    padding: 28px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(201, 163, 107, 0.2);
+    position: relative;
+  }
+  .essence::before {
+    content: "PRESERVED";
+    position: absolute; top: 14px; right: 18px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 10px; letter-spacing: 4px;
+    color: var(--gold); opacity: 0.6;
+  }
+  .essence-head {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(201, 163, 107, 0.25);
+  }
+  .essence-head-icon {
+    font-size: 24px; margin-bottom: 8px;
+  }
+  .essence-head-title {
+    font-family: "Noto Serif SC", serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--ink); letter-spacing: 4px;
+  }
+  .essence-head-sub {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--ink-soft); margin-top: 4px;
+    font-style: italic;
+  }
+  .essence-list { list-style: none; }
+  .essence-item {
+    display: flex; gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(201, 163, 107, 0.2);
+  }
+  .essence-item:last-child { border-bottom: none; }
+  .essence-item-num {
+    flex-shrink: 0;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--gold);
+    line-height: 1.2;
+    min-width: 28px;
+    font-style: italic;
+  }
+  .essence-item-text {
+    font-size: 14.5px; line-height: 1.9; color: var(--ink);
+    flex: 1;
+  }
+  .essence-item-text strong {
+    color: var(--peach-deep);
+  }
+
+  /* ============ Zodiac Details (太阳/月亮/上升) ============ */
+  .zodiac-details {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,235,247,0.85));
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 24px 22px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(201, 163, 107, 0.18);
+  }
+  .zd-head { text-align: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px dashed rgba(201, 163, 107, 0.25); }
+  .zd-head-title { font-family: "Noto Serif SC", serif; font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: 4px; }
+  .zd-head-sub { font-family: "Cormorant Garamond", serif; font-size: 11px; letter-spacing: 4px; color: var(--ink-soft); margin-top: 4px; font-style: italic; }
+  .zd-grid { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 16px; align-items: stretch; }
+  .zd-person { display: flex; flex-direction: column; align-items: center; }
+  .zd-person-name { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 12px; font-family: "Noto Serif SC", serif; }
+  .zd-rows { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .zd-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.7); border-radius: 10px; font-size: 13px; }
+  .zd-label { color: var(--ink-light); font-weight: 500; }
+  .zd-value { color: var(--peach-deep); font-weight: 700; font-family: "Noto Serif SC", serif; }
+  .zd-divider { width: 1px; background: linear-gradient(180deg, transparent, rgba(201, 163, 107, 0.4), transparent); }
+  .zd-foot { text-align: center; font-size: 11px; color: var(--ink-soft); margin-top: 14px; line-height: 1.6; }
+
+  /* ============ Wechat Modal ============ */
+  .wechat-prompt {
+    margin-top: 20px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, #fff5f0 0%, #f8ecf6 100%);
+    border: 1.5px solid var(--gold-light);
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+  }
+  .wechat-prompt-icon {
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  .wechat-prompt-title {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+  .wechat-prompt-sub {
+    font-size: 13px; color: var(--ink-light); line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .wechat-input-row {
+    display: flex; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .wechat-input {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1.5px solid rgba(255,181,167,0.4);
+    border-radius: 12px;
+    font-size: 14px;
+    background: white;
+    outline: none;
+    font-family: inherit;
+  }
+  .wechat-input:focus {
+    border-color: var(--peach-deep);
+    box-shadow: 0 0 0 4px rgba(255,181,167,0.15);
+  }
+  .wechat-submit {
+    padding: 12px 22px;
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    color: white;
+    border-radius: 12px;
+    font-size: 14px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .wechat-msg {
+    font-size: 12px; color: var(--lilac-deep);
+    margin-top: 8px;
+    min-height: 16px;
+  }
+  .wechat-msg.success { color: #4caf50; }
+  .wechat-msg.error { color: #c44; }
+  .wechat-prompt.done {
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    border-color: #a5d6a7;
+  }
+
+  /* ============ Action Bar (分享/下载/再测) ============ */
+  .action-bar {
+    margin-top: 32px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .action-bar-title {
+    text-align: center;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 12px; letter-spacing: 4px;
+    color: var(--ink-soft); margin-bottom: 4px;
+  }
+  .action-bar-sub {
+    text-align: center;
+    font-size: 13px; color: var(--ink-light);
+    margin-bottom: 18px;
+  }
+  .action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .action-btn {
+    padding: 14px 12px;
+    border-radius: 14px;
+    font-size: 13px; font-weight: 600;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .action-btn-icon { font-size: 18px; }
+  .action-btn.primary {
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    color: white;
+    box-shadow: var(--shadow-soft);
+  }
+  .action-btn.secondary {
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--lilac-deep);
+    border: 1.5px solid var(--lilac);
+  }
+  .action-btn:active { transform: translateY(2px); }
+  .restart-btn-full {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 13px;
+    border-radius: 12px;
+    border: 1px dashed var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  .report-footer {
+    text-align: center;
+    margin-top: 28px;
+    padding: 24px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 18px;
+  }
+  .report-footer .note {
+    font-size: 12px; color: var(--ink-light); line-height: 1.8;
+    margin-bottom: 6px;
+  }
+  .report-footer .by {
+    margin-top: 12px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--ink-soft);
+  }
+  .report-footer .by .name {
+    color: var(--gold); font-style: italic; font-weight: 600;
+  }
+
+  .error-box {
+    background: rgba(255,235,235,0.9); border: 1px solid #ffcaca;
+    border-radius: 16px; padding: 16px; color: #c44; font-size: 14px;
+    margin: 20px 0; text-align: center;
+  }
+  .hidden { display: none !important; }
+
+  /* ============ Share Modal ============ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(40, 25, 50, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s;
+  }
+  .modal {
+    background: white; border-radius: 24px;
+    max-width: 360px; width: 100%;
+    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-head {
+    padding: 20px 20px 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0e8ef;
+  }
+  .modal-title {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .modal-sub {
+    font-size: 12px; color: var(--ink-light);
+  }
+  .modal-body { padding: 16px; }
+  .share-card-preview {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 16px;
+  }
+  .share-card-preview img {
+    width: 100%; display: block;
+  }
+  .modal-actions {
+    display: flex; gap: 10px;
+  }
+  .modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px; font-weight: 600;
+  }
+  .modal-btn.primary {
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    color: white;
+  }
+  .modal-btn.secondary {
+    background: #f4eef6;
+    color: var(--ink);
+  }
+  .modal-tip {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 11px; color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* ============ Share Card (生成图片用,放在屏幕外) ============ */
+  #share-card-source {
+    position: absolute;
+    left: -9999px; top: 0;
+    width: 540px;
+    background: linear-gradient(170deg, #fff5f0 0%, #fde4ea 35%, #f4e0f5 70%, #e8e0f7 100%);
+    padding: 48px 36px;
+    font-family: "Noto Serif SC", serif;
+  }
+  .sc-emblem {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .sc-emblem-text {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 12px; letter-spacing: 8px;
+    color: var(--gold); font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .sc-emblem-deco {
+    font-size: 14px; letter-spacing: 12px; color: var(--gold-light);
+  }
+  .sc-names {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .sc-name-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+  .sc-name-block { text-align: center; }
+  .sc-name {
+    font-size: 22px; font-weight: 800; color: var(--ink);
+  }
+  .sc-name-zodiac {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 12px; letter-spacing: 2px; color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .sc-heart {
+    font-size: 28px;
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sc-score-block {
+    text-align: center;
+    margin: 28px 0;
+    padding: 20px 0;
+    border-top: 1px dashed rgba(201, 163, 107, 0.3);
+    border-bottom: 1px dashed rgba(201, 163, 107, 0.3);
+  }
+  .sc-score {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 80px; font-weight: 700;
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1;
+  }
+  .sc-score-unit {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px; color: var(--ink-soft);
+  }
+  .sc-score-label {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 5px;
+    color: var(--ink-soft); margin-top: 4px;
+  }
+  .sc-type {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .sc-type-text {
+    display: inline-block;
+    padding: 6px 18px;
+    background: white;
+    border: 1px solid var(--gold-light);
+    border-radius: 100px;
+    font-size: 13px; font-weight: 700;
+    color: var(--lilac-dark); letter-spacing: 2px;
+  }
+  .sc-tagline {
+    text-align: center;
+    font-size: 15px; color: var(--ink);
+    line-height: 1.9; padding: 0 12px;
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+  .sc-footer {
+    text-align: center;
+    padding-top: 18px;
+    border-top: 1px solid rgba(201, 163, 107, 0.3);
+  }
+  .sc-id {
+    font-family: "Cormorant Garamond", "Courier New", monospace;
+    font-size: 11px; color: var(--gold);
+    letter-spacing: 2px; margin-bottom: 6px;
+  }
+  .sc-by {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 11px; letter-spacing: 3px;
+    color: var(--ink-soft);
+  }
+  .sc-by .name {
+    color: var(--gold); font-style: italic; font-weight: 700;
+  }
+  .sc-call {
+    margin-top: 18px;
+    padding: 12px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--ink-light);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .sc-call strong { color: var(--peach-deep); }
+</style>
+</head>
+<body>
+
+
+
+<div class="bg-deco">
+  <div class="star" style="top: 15%; left: 8%; font-size: 14px;">✦</div>
+  <div class="star" style="top: 25%; right: 10%; font-size: 10px; animation-delay: 1s;">✧</div>
+  <div class="star" style="top: 60%; left: 12%; font-size: 12px; animation-delay: 2s;">✦</div>
+  <div class="star" style="top: 75%; right: 8%; font-size: 14px; animation-delay: 0.5s;">✧</div>
+  <div class="star" style="top: 40%; right: 15%; font-size: 10px; animation-delay: 1.5s;">✦</div>
+</div>
+
+<div class="app">
+
+  <!-- ============== Page 1: Form ============== -->
+  <div id="page-form" class="page">
+    <div class="hero">
+      <div class="hero-tag">SOULMATE · 灵魂合盘</div>
+      <h1 class="hero-title">你和 TA<br/>到底有多合</h1>
+      <div class="hero-deco">✦ ✧ ✦</div>
+      <p class="hero-sub">输入双方信息<br/>解开你们之间的缘分密码</p>
+      <div class="by-line">PRESENTED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
+    </div>
+
+    <div class="card">
+      <div class="person-section">
+        <div class="person-title"><span class="dot"></span>关于你</div>
+        <div class="field">
+          <label class="field-label">你的名字</label>
+          <input class="input" id="a-name" placeholder="请输入名字" maxlength="20">
+          <div class="quick-fill">
+            <button type="button" class="quick-fill-btn" data-demo="dewey">🎯 体验:dewey</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">性别</label>
+          <div class="gender-group">
+            <button type="button" class="gender-btn" data-target="a-gender" data-value="female">女生 ♀</button>
+            <button type="button" class="gender-btn" data-target="a-gender" data-value="male">男生 ♂</button>
+          </div>
+          <input type="hidden" id="a-gender">
+        </div>
+        <div class="field">
+          <label class="field-label">生日</label>
+          <input class="input" id="a-birthdate" type="date" max="2010-12-31" min="1950-01-01">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">出生时间 <span class="opt">(算月亮上升用)</span></label>
+            <input class="input" id="a-birthtime" type="time">
+          </div>
+          <div class="field">
+            <label class="field-label">出生城市 <span class="opt">(可选)</span></label>
+            <input class="input" id="a-birthplace" placeholder="如:北京" maxlength="20">
+          </div>
+        </div>
+      </div>
+
+      <div class="person-section">
+        <div class="person-title purple"><span class="dot"></span>关于 TA</div>
+        <div class="field">
+          <label class="field-label">TA 的名字</label>
+          <input class="input" id="b-name" placeholder="请输入名字" maxlength="20">
+          <div class="quick-fill">
+            <button type="button" class="quick-fill-btn" data-demo="snow">🎯 体验:snow</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">性别</label>
+          <div class="gender-group">
+            <button type="button" class="gender-btn" data-target="b-gender" data-value="female">女生 ♀</button>
+            <button type="button" class="gender-btn" data-target="b-gender" data-value="male">男生 ♂</button>
+          </div>
+          <input type="hidden" id="b-gender">
+        </div>
+        <div class="field">
+          <label class="field-label">生日</label>
+          <input class="input" id="b-birthdate" type="date" max="2010-12-31" min="1950-01-01">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">出生时间 <span class="opt">(算月亮上升用)</span></label>
+            <input class="input" id="b-birthtime" type="time">
+          </div>
+          <div class="field">
+            <label class="field-label">出生城市 <span class="opt">(可选)</span></label>
+            <input class="input" id="b-birthplace" placeholder="如:上海" maxlength="20">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn">✨ 解锁我们的灵魂合盘</button>
+    <div id="form-error" class="error-box hidden"></div>
+  </div>
+
+  <!-- ============== Page 2: Loading ============== -->
+  <div id="page-loading" class="page hidden">
+    <div class="loading">
+      <div class="loading-orb"></div>
+      <div class="loading-title">正在测算你们的缘分</div>
+      <div class="loading-sub">大约需要 30-60 秒,请耐心等待…</div>
+      <div class="loading-tips" id="loading-tips">✨ 正在解读双方星盘…</div>
+    </div>
+  </div>
+
+  <!-- ============== Page 3: Report ============== -->
+  <div id="page-report" class="page hidden">
+    <div id="report-content">
+      <!-- 报告封面 -->
+      <div class="cover" id="cover">
+        <div class="cover-corner tl"></div>
+        <div class="cover-corner tr"></div>
+        <div class="cover-corner bl"></div>
+        <div class="cover-corner br"></div>
+        <div class="cover-shine"></div>
+
+        <div class="cover-emblem">
+          <div class="cover-emblem-text">SOULMATE COMPATIBILITY</div>
+          <div class="cover-emblem-deco">✦ ✧ ✦</div>
+        </div>
+
+        <div class="cover-zodiac-row">
+          <div class="cover-zodiac">
+            <div class="cover-zodiac-icon" id="cover-zodiac-a-icon">♏</div>
+            <div class="cover-zodiac-name" id="cover-zodiac-a-name">SCORPIO</div>
+            <div class="cover-zodiac-person" id="cover-person-a">—</div>
+          </div>
+          <div class="cover-heart">❤</div>
+          <div class="cover-zodiac">
+            <div class="cover-zodiac-icon" id="cover-zodiac-b-icon">♐</div>
+            <div class="cover-zodiac-name" id="cover-zodiac-b-name">SAGITTARIUS</div>
+            <div class="cover-zodiac-person" id="cover-person-b">—</div>
+          </div>
+        </div>
+
+        <div class="cover-title-cn">灵魂合盘</div>
+        <div class="cover-title-en">— The Cosmic Bond —</div>
+
+        <div class="cover-score-wrap">
+          <span class="cover-score" id="cover-score">--</span><span class="cover-score-unit">/100</span>
+          <div class="cover-score-label">SOULMATE INDEX</div>
+        </div>
+
+        <div class="cover-type-row">
+          <span class="cover-type" id="cover-type">—</span>
+        </div>
+
+        <div class="cover-tagline" id="cover-tagline">—</div>
+
+        <div class="cover-meta">
+          <div class="cover-meta-id" id="cover-id">N° XX-XXXX-XXXX</div>
+          <div class="cover-meta-date" id="cover-date">— · — · —</div>
+          <div class="cover-by">CURATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
+        </div>
+      </div>
+
+      <!-- 章节 -->
+      <!-- 三大星座详情(太阳/月亮/上升) -->
+      <div class="zodiac-details" id="zodiac-details"></div>
+
+      <div id="chapters-container"></div>
+
+      <!-- 精华相处建议 -->
+      <div class="essence" id="essence-section">
+        <div class="essence-head">
+          <div class="essence-head-icon">💎</div>
+          <div class="essence-head-title">珍 藏 锦 囊</div>
+          <div class="essence-head-sub">ESSENCE OF YOUR BOND</div>
+        </div>
+        <ul class="essence-list" id="essence-list"></ul>
+      </div>
+    </div>
+
+    <!-- 操作栏 -->
+    <div class="action-bar">
+      <div class="action-bar-title">— KEEP IT FOREVER —</div>
+      <div class="action-bar-sub">把这份独属于你们的报告珍藏下来</div>
+      <div class="action-grid">
+        <button class="action-btn primary" id="share-btn">
+          <span class="action-btn-icon">📤</span>
+          <span>生成分享卡片</span>
+        </button>
+        <button class="action-btn secondary" id="pdf-btn">
+          <span class="action-btn-icon">📄</span>
+          <span>下载完整报告</span>
+        </button>
+      </div>
+      <button class="restart-btn-full" id="restart-btn">为另一对再测一次</button>
+    </div>
+
+    <!-- 微信号收集(私域引流) -->
+    <div class="wechat-prompt" id="wechat-prompt">
+      <div class="wechat-prompt-icon">💌</div>
+      <div class="wechat-prompt-title">想要小登哥亲自帮你解读?</div>
+      <div class="wechat-prompt-sub">
+        留下微信号,有空我会针对你们的情况给你一对一回复<br/>
+        <span style="font-size:11px;opacity:0.7;">(完全免费 · 不会乱加 · 一周内回复)</span>
+      </div>
+      <div class="wechat-input-row">
+        <input class="wechat-input" id="wechat-input" placeholder="微信号 / 抖音号" maxlength="50">
+        <button class="wechat-submit" id="wechat-submit">提交</button>
+      </div>
+      <div class="wechat-msg" id="wechat-msg"></div>
+    </div>
+
+    <div class="report-footer">
+      <div class="note">这份报告专属于你们 · 仅供参考</div>
+      <div class="note">愿你被爱,也勇敢去爱 💕</div>
+      <div class="by">CURATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay hidden" id="share-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">分享你们的合盘卡片</div>
+      <div class="modal-sub">长按图片可保存到相册</div>
+    </div>
+    <div class="modal-body">
+      <div class="share-card-preview" id="share-preview"></div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" id="share-close">关闭</button>
+        <button class="modal-btn primary" id="share-download">下载图片</button>
+      </div>
+      <div class="modal-tip">下载后可转发到微信好友/朋友圈<br/>iOS 用户可长按图片直接保存</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ Zodiac data ============
+const ZODIAC_INFO = {
+  "白羊座": {icon:"♈", en:"ARIES", element:"火"},
+  "金牛座": {icon:"♉", en:"TAURUS", element:"土"},
+  "双子座": {icon:"♊", en:"GEMINI", element:"风"},
+  "巨蟹座": {icon:"♋", en:"CANCER", element:"水"},
+  "狮子座": {icon:"♌", en:"LEO", element:"火"},
+  "处女座": {icon:"♍", en:"VIRGO", element:"土"},
+  "天秤座": {icon:"♎", en:"LIBRA", element:"风"},
+  "天蝎座": {icon:"♏", en:"SCORPIO", element:"水"},
+  "射手座": {icon:"♐", en:"SAGITTARIUS", element:"火"},
+  "摩羯座": {icon:"♑", en:"CAPRICORN", element:"土"},
+  "水瓶座": {icon:"♒", en:"AQUARIUS", element:"风"},
+  "双鱼座": {icon:"♓", en:"PISCES", element:"水"},
+};
+
+// ============ 开发模式:URL 带 #dev 时显示快速填入按钮 ============
+if (location.hash === '#dev') {
+  document.querySelectorAll('.quick-fill').forEach(el => el.classList.add('show'));
+}
+
+function computeZodiac(birthDate) {
+  if (!birthDate) return '未知';
+  const d = new Date(birthDate);
+  const m = d.getMonth() + 1, day = d.getDate();
+  if ((m===3&&day>=21)||(m===4&&day<=19)) return '白羊座';
+  if ((m===4&&day>=20)||(m===5&&day<=20)) return '金牛座';
+  if ((m===5&&day>=21)||(m===6&&day<=21)) return '双子座';
+  if ((m===6&&day>=22)||(m===7&&day<=22)) return '巨蟹座';
+  if ((m===7&&day>=23)||(m===8&&day<=22)) return '狮子座';
+  if ((m===8&&day>=23)||(m===9&&day<=22)) return '处女座';
+  if ((m===9&&day>=23)||(m===10&&day<=23)) return '天秤座';
+  if ((m===10&&day>=24)||(m===11&&day<=22)) return '天蝎座';
+  if ((m===11&&day>=23)||(m===12&&day<=21)) return '射手座';
+  if ((m===12&&day>=22)||(m===1&&day<=19)) return '摩羯座';
+  if ((m===1&&day>=20)||(m===2&&day<=18)) return '水瓶座';
+  return '双鱼座';
+}
+
+// ============ (报告由真实 Claude API 生成) ============
+
+
+// ============ Helpers ============
+const $ = (id) => document.getElementById(id);
+const show = (id) => $(id).classList.remove('hidden');
+const hide = (id) => $(id).classList.add('hidden');
+const switchPage = (pageId) => {
+  ['page-form','page-loading','page-report'].forEach(p => p===pageId ? show(p) : hide(p));
+  window.scrollTo(0, 0);
+};
+
+// ============ Unique ID Generator ============
+// 编号格式:N° ZODIAC-DATE-DICE  例如:N° SCSG-260518-A7K9
+// SCSG = Scorpio + Sagittarius 缩写,260518 = 日期,A7K9 = 4位随机
+function generateUniqueId(zA, zB) {
+  const codeA = (ZODIAC_INFO[zA]?.en || 'XX').substring(0,2);
+  const codeB = (ZODIAC_INFO[zB]?.en || 'XX').substring(0,2);
+  const d = new Date();
+  const date = d.getFullYear().toString().substring(2) +
+               String(d.getMonth()+1).padStart(2,'0') +
+               String(d.getDate()).padStart(2,'0');
+  // 4位:数字+字母混合
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let rand = '';
+  for (let i=0; i<4; i++) rand += chars[Math.floor(Math.random()*chars.length)];
+  return `N° ${codeA}${codeB}-${date}-${rand}`;
+}
+
+function formatDate(d = new Date()) {
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  return `${d.getDate()} · ${months[d.getMonth()]} · ${d.getFullYear()}`;
+}
+
+// ============ Gender buttons ============
+document.querySelectorAll('.gender-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const value = btn.dataset.value;
+    $(target).value = value;
+    document.querySelectorAll(`[data-target="${target}"]`).forEach(b => b.classList.remove('active','female'));
+    btn.classList.add('active');
+    if (value==='female') btn.classList.add('female');
+  });
+});
+
+// URL 里带 #dev 才显示快速填入(开发/演示用)
+if (location.hash.includes('dev')) {
+  document.querySelectorAll('.quick-fill').forEach(el => el.classList.add('show'));
+}
+
+document.querySelectorAll('.quick-fill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const demo = btn.dataset.demo;
+    if (demo === 'dewey') {
+      $('a-name').value = 'dewey';
+      $('a-birthdate').value = '1986-12-10';
+      $('a-birthtime').value = '14:30';
+      $('a-birthplace').value = '北京';
+      $('a-gender').value = 'male';
+      document.querySelectorAll('[data-target="a-gender"]').forEach(b => {
+        b.classList.remove('active', 'female');
+        if (b.dataset.value === 'male') b.classList.add('active');
+      });
+    } else if (demo === 'snow') {
+      $('b-name').value = 'snow';
+      $('b-birthdate').value = '1988-11-06';
+      $('b-birthtime').value = '10:15';
+      $('b-birthplace').value = '上海';
+      $('b-gender').value = 'female';
+      document.querySelectorAll('[data-target="b-gender"]').forEach(b => {
+        b.classList.remove('active', 'female');
+        if (b.dataset.value === 'female') b.classList.add('active', 'female');
+      });
+    }
+  });
+});
+
+function collectForm() {
+  return {
+    personA: {
+      name: $('a-name').value.trim(),
+      gender: $('a-gender').value,
+      birthDate: $('a-birthdate').value,
+      birthTime: $('a-birthtime').value || null,
+      birthPlace: $('a-birthplace').value.trim() || null
+    },
+    personB: {
+      name: $('b-name').value.trim(),
+      gender: $('b-gender').value,
+      birthDate: $('b-birthdate').value,
+      birthTime: $('b-birthtime').value || null,
+      birthPlace: $('b-birthplace').value.trim() || null
+    }
+  };
+}
+
+function validate(d) {
+  const a=d.personA, b=d.personB;
+  if (!a.name) return '请填写你的名字';
+  if (!a.gender) return '请选择你的性别';
+  if (!a.birthDate) return '请选择你的生日';
+  if (!b.name) return 'TA 的名字呢?';
+  if (!b.gender) return '请选择 TA 的性别';
+  if (!b.birthDate) return '请选择 TA 的生日';
+  return null;
+}
+
+const tipsList = ['✨ 正在解读双方星盘…','🌙 计算月亮和金星的位置…','💕 分析你们的星座化学反应…','🔮 推算关键节点和未来走向…','💌 写下专属于你们的悄悄话…'];
+let tipIdx=0, tipTimer=null;
+function startTips() {
+  tipIdx=0; $('loading-tips').textContent=tipsList[0];
+  tipTimer = setInterval(() => { tipIdx=(tipIdx+1)%tipsList.length; $('loading-tips').textContent=tipsList[tipIdx]; }, 3000);
+}
+function stopTips() { if (tipTimer) clearInterval(tipTimer); }
+
+function renderInline(t) {
+  if (!t) return '';
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+let currentReport = null, currentForm = null, currentZodiacs = null;
+
+function renderReport(data, form) {
+  currentReport = data; currentForm = form;
+  // 优先用后端返回的星座(包含太阳/月亮/上升),fallback 到前端简单计算
+  const sunA = data.zodiacA?.sun || computeZodiac(form.personA.birthDate);
+  const sunB = data.zodiacB?.sun || computeZodiac(form.personB.birthDate);
+  currentZodiacs = {a: sunA, b: sunB, fullA: data.zodiacA, fullB: data.zodiacB};
+
+  // 封面
+  $('cover-zodiac-a-icon').textContent = ZODIAC_INFO[sunA]?.icon || '✦';
+  $('cover-zodiac-a-name').textContent = ZODIAC_INFO[sunA]?.en || sunA;
+  $('cover-person-a').textContent = form.personA.name;
+  $('cover-zodiac-b-icon').textContent = ZODIAC_INFO[sunB]?.icon || '✦';
+  $('cover-zodiac-b-name').textContent = ZODIAC_INFO[sunB]?.en || sunB;
+  $('cover-person-b').textContent = form.personB.name;
+  $('cover-score').textContent = data.score ?? '--';
+  $('cover-type').textContent = data.relationshipType || '';
+  $('cover-tagline').textContent = data.tagline || '';
+
+  // 用后端返回的 uid;若无则前端兜底生成
+  const uid = data.reportUid || generateUniqueId(sunA, sunB);
+  $('cover-id').textContent = uid;
+  $('cover-date').textContent = formatDate();
+  currentReport._uid = uid;
+
+  // 三大星座详情(太阳/月亮/上升)
+  renderZodiacDetails(data, form, sunA, sunB);
+
+  // 章节
+  const cont = $('chapters-container');
+  cont.innerHTML = '';
+  (data.chapters || []).forEach((ch, idx) => {
+    const div = document.createElement('div');
+    div.className = 'chapter';
+    div.innerHTML = `
+      <div class="chapter-num">${String(idx+1).padStart(2,'0')}</div>
+      <div class="chapter-head">
+        <span class="chapter-emoji">${ch.emoji || '✨'}</span>
+        <div class="chapter-title">${renderInline(ch.title)}</div>
+      </div>
+      <div class="chapter-body">${renderInline(ch.content)}</div>
+    `;
+    cont.appendChild(div);
+  });
+
+  // 精华锦囊
+  const list = $('essence-list');
+  list.innerHTML = '';
+  (data.essence || []).forEach((item, idx) => {
+    const li = document.createElement('li');
+    li.className = 'essence-item';
+    li.innerHTML = `
+      <div class="essence-item-num">${String(idx+1).padStart(2,'0')}</div>
+      <div class="essence-item-text">${renderInline(item)}</div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// 渲染太阳/月亮/上升详情
+function renderZodiacDetails(data, form, sunA, sunB) {
+  const box = $('zodiac-details');
+  if (!box) return;  // 容错:DOM 不存在则跳过
+
+  const zA = data.zodiacA || {sun: sunA, moon: '?', rising: '?'};
+  const zB = data.zodiacB || {sun: sunB, moon: '?', rising: '?'};
+
+  box.innerHTML = `
+    <div class="zd-head">
+      <div class="zd-head-title">三 大 星 座</div>
+      <div class="zd-head-sub">SUN · MOON · RISING</div>
+    </div>
+    <div class="zd-grid">
+      <div class="zd-person">
+        <div class="zd-person-name">${form.personA.name}</div>
+        <div class="zd-rows">
+          <div class="zd-row"><span class="zd-label">☀️ 太阳</span><span class="zd-value">${zA.sun}</span></div>
+          <div class="zd-row"><span class="zd-label">🌙 月亮</span><span class="zd-value">${zA.moon}</span></div>
+          <div class="zd-row"><span class="zd-label">⬆️ 上升</span><span class="zd-value">${zA.rising}</span></div>
+        </div>
+      </div>
+      <div class="zd-divider"></div>
+      <div class="zd-person">
+        <div class="zd-person-name">${form.personB.name}</div>
+        <div class="zd-rows">
+          <div class="zd-row"><span class="zd-label">☀️ 太阳</span><span class="zd-value">${zB.sun}</span></div>
+          <div class="zd-row"><span class="zd-label">🌙 月亮</span><span class="zd-value">${zB.moon}</span></div>
+          <div class="zd-row"><span class="zd-label">⬆️ 上升</span><span class="zd-value">${zB.rising}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="zd-foot">太阳代表外在性格 · 月亮是情绪内核 · 上升是别人眼里的你</div>
+  `;
+}
+
+// ============ API 调用 ============
+// 后端 API 地址:同域部署留空字符串,跨域填后端地址
+const API_BASE = (() => {
+  // 本地开发自动指向 8080
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    return location.port === '8080' ? '' : 'http://localhost:8080';
+  }
+  return '';  // 生产环境同域
+})();
+
+async function callCompatibilityApi(form) {
+  const resp = await fetch(`${API_BASE}/api/compatibility`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(form)
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const err = new Error(data.message || `服务错误 (${resp.status})`);
+    err.code = data.error;
+    err.status = resp.status;
+    throw err;
+  }
+  return data;
+}
+
+$('submit-btn').addEventListener('click', async () => {
+  hide('form-error');
+  const form = collectForm();
+  const err = validate(form);
+  if (err) { $('form-error').textContent = err; show('form-error'); return; }
+
+  switchPage('page-loading'); startTips();
+
+  try {
+    const report = await callCompatibilityApi(form);
+    stopTips();
+    renderReport(report, form);
+    switchPage('page-report');
+  } catch (e) {
+    stopTips();
+    switchPage('page-form');
+    $('form-error').textContent = e.message || '生成失败,请稍后再试';
+    show('form-error');
+  }
+});
+
+$('restart-btn').addEventListener('click', () => {
+  // 重置微信号面板
+  const prompt = document.getElementById('wechat-prompt');
+  if (prompt) {
+    prompt.classList.remove('done');
+    prompt.innerHTML = `
+      <div class="wechat-prompt-icon">💌</div>
+      <div class="wechat-prompt-title">想要小登哥亲自帮你解读?</div>
+      <div class="wechat-prompt-sub">
+        留下微信号,有空我会针对你们的情况给你一对一回复<br/>
+        <span style="font-size:11px;opacity:0.7;">(完全免费 · 不会乱加 · 一周内回复)</span>
+      </div>
+      <div class="wechat-input-row">
+        <input class="wechat-input" id="wechat-input" placeholder="微信号 / 抖音号" maxlength="50">
+        <button class="wechat-submit" id="wechat-submit">提交</button>
+      </div>
+      <div class="wechat-msg" id="wechat-msg"></div>
+    `;
+  }
+  switchPage('page-form');
+});
+
+// ============ Canvas 绘制工具函数 ============
+// 自动换行的中文文本绘制
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const chars = Array.from(text);
+  let line = '';
+  let lines = [];
+  for (let i = 0; i < chars.length; i++) {
+    const testLine = line + chars[i];
+    const w = ctx.measureText(testLine).width;
+    if (w > maxWidth && line) {
+      lines.push(line);
+      line = chars[i];
+    } else {
+      line = testLine;
+    }
+  }
+  if (line) lines.push(line);
+  lines.forEach((ln, idx) => {
+    ctx.fillText(ln, x, y + idx * lineHeight);
+  });
+  return lines.length;
+}
+
+// 处理 markdown 简单粗体:把字符串拆成 [{text, bold}] 数组
+function parseBold(text) {
+  const parts = [];
+  const re = /\*\*(.+?)\*\*/g;
+  let last = 0, m;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push({text: text.substring(last, m.index), bold: false});
+    parts.push({text: m[1], bold: true});
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push({text: text.substring(last), bold: false});
+  return parts;
+}
+
+// 富文本(支持加粗)自动换行绘制
+// fontSize/lineHeight 必填,boldColor 为粗体高亮色
+function drawRichText(ctx, segments, x, y, maxWidth, opts) {
+  const {fontSize = 14, lineHeight = 28, fontFamily = '"PingFang SC", sans-serif',
+         normalColor = '#3d2a35', boldColor = '#ff8b7a'} = opts;
+  let curX = x, curY = y;
+  let totalLines = 1;
+
+  segments.forEach(seg => {
+    ctx.font = `${seg.bold ? '700' : '400'} ${fontSize}px ${fontFamily}`;
+    ctx.fillStyle = seg.bold ? boldColor : normalColor;
+
+    const chars = Array.from(seg.text);
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      if (ch === '\n') {
+        curX = x;
+        curY += lineHeight;
+        totalLines++;
+        continue;
+      }
+      const chW = ctx.measureText(ch).width;
+      if (curX + chW > x + maxWidth) {
+        curX = x;
+        curY += lineHeight;
+        totalLines++;
+      }
+      ctx.fillText(ch, curX, curY);
+      curX += chW;
+    }
+  });
+  return {endY: curY, lines: totalLines};
+}
+
+// 创建线性渐变文字(返回 Canvas 渐变对象)
+function createTextGradient(ctx, x, y, w, h, colors) {
+  const g = ctx.createLinearGradient(x, y, x + w, y + h);
+  colors.forEach((c, i) => g.addColorStop(i / (colors.length - 1), c));
+  return g;
+}
+
+// 画圆角矩形
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// 画爱心(SVG path 转 canvas)
+// 画爱心(纯矢量,不依赖字体)
+function drawHeart(ctx, cx, cy, size, fillStyle) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  const s = size / 100;
+  ctx.scale(s, s);
+  ctx.beginPath();
+  // 标准爱心 SVG path 转 Canvas:从底部尖端出发
+  ctx.moveTo(0, 30);
+  ctx.bezierCurveTo(-60, -10, -50, -50, -25, -50);
+  ctx.bezierCurveTo(-10, -50, 0, -35, 0, -20);
+  ctx.bezierCurveTo(0, -35, 10, -50, 25, -50);
+  ctx.bezierCurveTo(50, -50, 60, -10, 0, 30);
+  ctx.closePath();
+  ctx.fillStyle = fillStyle;
+  ctx.fill();
+  ctx.restore();
+}
+
+// ============ Share Card Generation (Canvas 原生绘制) ============
+function generateShareCard() {
+  const f = currentForm, r = currentReport, z = currentZodiacs;
+  const W = 750, H = 1334; // 标准手机分享图比例
+  const DPR = 2;  // 2x 高清渲染
+  const canvas = document.createElement('canvas');
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);  // 所有坐标保持原值
+  canvas._logicalW = W;
+  canvas._logicalH = H;
+
+  // 1. 背景渐变
+  const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+  bgGrad.addColorStop(0, '#fff5f0');
+  bgGrad.addColorStop(0.35, '#fde4ea');
+  bgGrad.addColorStop(0.7, '#f4e0f5');
+  bgGrad.addColorStop(1, '#e8e0f7');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // 2. 四角金色装饰
+  ctx.strokeStyle = 'rgba(201, 163, 107, 0.5)';
+  ctx.lineWidth = 2;
+  const corner = 80, margin = 40;
+  // 左上
+  ctx.beginPath(); ctx.moveTo(margin, margin+corner); ctx.lineTo(margin, margin); ctx.lineTo(margin+corner, margin); ctx.stroke();
+  // 右上
+  ctx.beginPath(); ctx.moveTo(W-margin-corner, margin); ctx.lineTo(W-margin, margin); ctx.lineTo(W-margin, margin+corner); ctx.stroke();
+  // 左下
+  ctx.beginPath(); ctx.moveTo(margin, H-margin-corner); ctx.lineTo(margin, H-margin); ctx.lineTo(margin+corner, H-margin); ctx.stroke();
+  // 右下
+  ctx.beginPath(); ctx.moveTo(W-margin-corner, H-margin); ctx.lineTo(W-margin, H-margin); ctx.lineTo(W-margin, H-margin-corner); ctx.stroke();
+
+  // 3. 顶部 emblem
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#c9a36b';
+  ctx.font = '600 22px "Cormorant Garamond", "Georgia", serif';
+  ctx.fillText('SOULMATE COMPATIBILITY', W/2, 160);
+  ctx.font = '300 24px serif';
+  ctx.fillStyle = 'rgba(201, 163, 107, 0.6)';
+  ctx.fillText('✦ ✧ ✦', W/2, 200);
+
+  // 4. 双方姓名 + 星座
+  const nameY = 320;
+  const zodiacA_en = ZODIAC_INFO[z.a]?.en || '';
+  const zodiacB_en = ZODIAC_INFO[z.b]?.en || '';
+
+  // 计算左右对称布局
+  const leftCenterX = W/2 - 170;
+  const rightCenterX = W/2 + 170;
+
+  // A 名字
+  ctx.font = '800 52px "PingFang SC", "Songti SC", serif';
+  ctx.fillStyle = '#3d2a35';
+  ctx.fillText(f.personA.name, leftCenterX, nameY);
+  ctx.font = '500 18px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#9a7a8d';
+  ctx.fillText(zodiacA_en, leftCenterX, nameY + 36);
+
+  // B 名字
+  ctx.font = '800 52px "PingFang SC", "Songti SC", serif';
+  ctx.fillStyle = '#3d2a35';
+  ctx.fillText(f.personB.name, rightCenterX, nameY);
+  ctx.font = '500 18px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#9a7a8d';
+  ctx.fillText(zodiacB_en, rightCenterX, nameY + 36);
+
+  // 中间爱心(渐变填充)
+  const heartGrad = ctx.createLinearGradient(W/2 - 25, nameY - 30, W/2 + 25, nameY + 10);
+  heartGrad.addColorStop(0, '#ff8b7a');
+  heartGrad.addColorStop(1, '#9b7fc7');
+  drawHeart(ctx, W/2, nameY - 10, 50, heartGrad);
+
+  // 5. 分割线
+  ctx.strokeStyle = 'rgba(201, 163, 107, 0.4)';
+  ctx.setLineDash([4, 6]);
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, 440); ctx.lineTo(W-120, 440); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 6. 大分数(渐变)+ /100 单位:统一测量后居中布局
+  const scoreY = 620;
+  const scoreStr = String(r.score);
+  const unitStr = ' /100';
+
+  // 先测量两段宽度
+  ctx.font = '700 200px "Georgia", "Cormorant Garamond", serif';
+  const scoreW = ctx.measureText(scoreStr).width;
+  ctx.font = '400 54px "Georgia", serif';
+  const unitW = ctx.measureText(unitStr).width;
+  const totalW = scoreW + unitW;
+
+  // 整体居中起点
+  const groupStartX = (W - totalW) / 2;
+
+  // 画分数(渐变)
+  ctx.font = '700 200px "Georgia", "Cormorant Garamond", serif';
+  const scoreGrad = ctx.createLinearGradient(groupStartX, scoreY - 150, groupStartX + scoreW, scoreY);
+  scoreGrad.addColorStop(0, '#ff8b7a');
+  scoreGrad.addColorStop(1, '#9b7fc7');
+  ctx.fillStyle = scoreGrad;
+  ctx.textAlign = 'left';
+  ctx.fillText(scoreStr, groupStartX, scoreY);
+
+  // 画 /100 单位(浅色,基线下移)
+  ctx.font = '400 54px "Georgia", serif';
+  ctx.fillStyle = '#9a7a8d';
+  ctx.fillText(unitStr, groupStartX + scoreW, scoreY - 8);
+
+  // SOULMATE INDEX label
+  ctx.textAlign = 'center';
+  ctx.font = '500 16px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#9a7a8d';
+  ctx.fillText('S O U L M A T E   I N D E X', W/2, scoreY + 40);
+
+  // 7. 下分割线
+  ctx.strokeStyle = 'rgba(201, 163, 107, 0.4)';
+  ctx.setLineDash([4, 6]);
+  ctx.beginPath(); ctx.moveTo(120, 720); ctx.lineTo(W-120, 720); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 8. 关系类型胶囊
+  const typeText = r.relationshipType || '';
+  ctx.font = '700 22px "PingFang SC", sans-serif';
+  const typeW = ctx.measureText(typeText).width;
+  const typePillW = typeW + 60;
+  const typeX = (W - typePillW) / 2;
+  const typeY = 770;
+  // 白色胶囊背景
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  roundRect(ctx, typeX, typeY, typePillW, 56, 28);
+  ctx.fill();
+  ctx.strokeStyle = '#e6c896';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // 文字
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#7d5fb3';
+  ctx.textAlign = 'center';
+  ctx.fillText(typeText, W/2, typeY + 28);
+  ctx.textBaseline = 'alphabetic';
+
+  // 9. Tagline
+  ctx.font = 'italic 28px "PingFang SC", "Songti SC", serif';
+  ctx.fillStyle = '#3d2a35';
+  const tagline = r.tagline || '';
+  // 引号
+  ctx.font = 'italic 60px "Georgia", serif';
+  ctx.fillStyle = 'rgba(201, 163, 107, 0.5)';
+  ctx.fillText('"', W/2 - 200, 900);
+
+  ctx.font = 'italic 28px "PingFang SC", "Songti SC", serif';
+  ctx.fillStyle = '#3d2a35';
+  // 居中绘制带自动换行
+  const taglineLines = [];
+  let curLine = '';
+  const taglineMaxW = W - 200;
+  Array.from(tagline).forEach(ch => {
+    const test = curLine + ch;
+    if (ctx.measureText(test).width > taglineMaxW) {
+      taglineLines.push(curLine);
+      curLine = ch;
+    } else {
+      curLine = test;
+    }
+  });
+  if (curLine) taglineLines.push(curLine);
+  taglineLines.forEach((ln, idx) => {
+    ctx.fillText(ln, W/2, 920 + idx * 50);
+  });
+
+  // 10. 底部分割线
+  const footerY = 1060;
+  ctx.strokeStyle = 'rgba(201, 163, 107, 0.3)';
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, footerY); ctx.lineTo(W-120, footerY); ctx.stroke();
+
+  // 11. 编号
+  ctx.font = '600 22px "Cormorant Garamond", "Courier New", monospace';
+  ctx.fillStyle = '#c9a36b';
+  ctx.textAlign = 'center';
+  ctx.fillText(r._uid || '', W/2, footerY + 50);
+
+  // 12. CURATED BY 小登哥(测量后整体居中)
+  const curatedLabel = 'CURATED  BY';
+  const xdName = '小登哥 · XIAODENG';
+
+  ctx.font = '500 20px "Cormorant Garamond", serif';
+  const curW = ctx.measureText(curatedLabel).width;
+  ctx.font = 'italic 700 24px "PingFang SC", "Songti SC", serif';
+  const xdW = ctx.measureText(xdName).width;
+
+  const gap = 16;  // 两段之间空隙
+  const byTotal = curW + gap + xdW;
+  const byStart = (W - byTotal) / 2;
+  const byY = footerY + 95;
+
+  ctx.textAlign = 'left';
+  ctx.font = '500 20px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#9a7a8d';
+  ctx.fillText(curatedLabel, byStart, byY);
+
+  ctx.font = 'italic 700 24px "PingFang SC", "Songti SC", serif';
+  ctx.fillStyle = '#c9a36b';
+  ctx.fillText(xdName, byStart + curW + gap, byY);
+
+  // 13. 引流卡片
+  const callY = footerY + 145;
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  roundRect(ctx, 80, callY, W - 160, 100, 16);
+  ctx.fill();
+
+  ctx.textAlign = 'center';
+  ctx.font = '500 22px "PingFang SC", sans-serif';
+  ctx.fillStyle = '#6b4f60';
+  ctx.fillText('想看完整版报告 ?', W/2, callY + 38);
+
+  ctx.font = '700 26px "PingFang SC", sans-serif';
+  ctx.fillStyle = '#ff8b7a';
+  ctx.fillText('抖音搜索:小登哥 ♐♏', W/2, callY + 78);
+
+  return canvas;
+}
+
+// ============ 微信号提交(用事件委托,支持重置后仍能工作) ============
+async function submitWechat() {
+  const input = document.getElementById('wechat-input');
+  const msg = document.getElementById('wechat-msg');
+  const btn = document.getElementById('wechat-submit');
+  if (!input || !msg || !btn) return;
+
+  const wechatId = input.value.trim();
+  msg.className = 'wechat-msg';
+  msg.textContent = '';
+
+  if (!wechatId) {
+    msg.className = 'wechat-msg error';
+    msg.textContent = '请填写微信号或抖音号';
+    return;
+  }
+  if (wechatId.length < 3) {
+    msg.className = 'wechat-msg error';
+    msg.textContent = '微信号至少 3 位';
+    return;
+  }
+  if (!currentReport || !currentReport._uid) {
+    msg.className = 'wechat-msg error';
+    msg.textContent = '报告未生成,请先生成报告';
+    return;
+  }
+
+  btn.textContent = '提交中…';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/wechat`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        reportUid: currentReport._uid,
+        wechatId: wechatId
+      })
+    });
+    const data = await resp.json().catch(() => ({}));
+
+    if (resp.ok) {
+      const prompt = document.getElementById('wechat-prompt');
+      prompt.classList.add('done');
+      prompt.innerHTML = `
+        <div class="wechat-prompt-icon">✅</div>
+        <div class="wechat-prompt-title">收到啦,小登哥会看到 💕</div>
+        <div class="wechat-prompt-sub">
+          一周内我会给你回复<br/>
+          <span style="font-size:11px;opacity:0.7;">也可以直接在抖音搜索「小登哥」找到我</span>
+        </div>
+      `;
+    } else {
+      msg.className = 'wechat-msg error';
+      msg.textContent = data.message || '提交失败,请稍后再试';
+      btn.textContent = '提交';
+      btn.disabled = false;
+    }
+  } catch (e) {
+    msg.className = 'wechat-msg error';
+    msg.textContent = '网络错误,请重试';
+    btn.textContent = '提交';
+    btn.disabled = false;
+  }
+}
+
+// 用 document 委托,无论 DOM 怎么重置都生效
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.id === 'wechat-submit') {
+    submitWechat();
+  }
+});
+
+$('share-btn').addEventListener('click', async () => {
+  if (!currentReport) return;
+  $('share-btn').innerHTML = '<span class="action-btn-icon">⏳</span><span>生成中…</span>';
+
+  try {
+    // 让浏览器有时间加载字体
+    await document.fonts.ready;
+    await new Promise(r => setTimeout(r, 100));
+
+    const canvas = generateShareCard();
+    const dataUrl = canvas.toDataURL('image/png');
+
+    const img = new Image();
+    img.src = dataUrl;
+    img.style.width = '100%';
+    img.style.display = 'block';
+    $('share-preview').innerHTML = '';
+    $('share-preview').appendChild(img);
+    show('share-modal');
+    window._shareImageData = dataUrl;
+  } catch (e) {
+    alert('生成失败:' + e.message);
+    console.error(e);
+  } finally {
+    $('share-btn').innerHTML = '<span class="action-btn-icon">📤</span><span>生成分享卡片</span>';
+  }
+});
+
+$('share-close').addEventListener('click', () => hide('share-modal'));
+
+$('share-download').addEventListener('click', () => {
+  if (!window._shareImageData) return;
+  const link = document.createElement('a');
+  link.download = `灵魂合盘-${currentForm.personA.name}-${currentForm.personB.name}.png`;
+  link.href = window._shareImageData;
+  link.click();
+});
+
+$('share-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'share-modal') hide('share-modal');
+});
+
+// ============ PDF Generation (Canvas + jsPDF) ============
+// 把整份报告画到多张 canvas 上,再合成 PDF
+function generatePdfPages() {
+  const f = currentForm, r = currentReport, z = currentZodiacs;
+  const PAGE_W = 750, PAGE_H = 1334;  // A4 比例近似,适合手机阅读
+  const DPR = 2;  // 2x 高清渲染,PDF 不糊
+  const pages = [];
+
+  const newPage = () => {
+    const c = document.createElement('canvas');
+    // 物理尺寸 2x,逻辑尺寸 1x(通过 CSS 缩放)
+    c.width = PAGE_W * DPR;
+    c.height = PAGE_H * DPR;
+    const cx = c.getContext('2d');
+    cx.scale(DPR, DPR);  // 所有坐标自动 2x,代码不需改
+    // 渐变背景
+    const bg = cx.createLinearGradient(0, 0, PAGE_W, PAGE_H);
+    bg.addColorStop(0, '#fff5f0');
+    bg.addColorStop(0.35, '#fde4ea');
+    bg.addColorStop(0.7, '#f4e0f5');
+    bg.addColorStop(1, '#e8e0f7');
+    cx.fillStyle = bg;
+    cx.fillRect(0, 0, PAGE_W, PAGE_H);
+    // 自定义记录原始尺寸,便于 PDF 输出时用
+    c._logicalW = PAGE_W;
+    c._logicalH = PAGE_H;
+    return {canvas: c, ctx: cx, cursorY: 80};
+  };
+
+  // ====== PAGE 1: 封面(复用分享卡片) ======
+  pages.push({canvas: generateShareCard(), ctx: null});
+
+  // ====== 后续页:章节内容 ======
+  const MARGIN_X = 80;
+  const CONTENT_W = PAGE_W - MARGIN_X * 2;
+  const BOTTOM_LIMIT = PAGE_H - 80;
+
+  let page = newPage();
+  let cursorY = 100;
+
+  // 绘制章节标题
+  const drawChapterTitle = (ctx, emoji, idx, title, y) => {
+    // 编号(右上)
+    ctx.font = 'italic 60px "Cormorant Garamond", serif';
+    ctx.fillStyle = 'rgba(201, 163, 107, 0.35)';
+    ctx.textAlign = 'right';
+    ctx.fillText(String(idx).padStart(2, '0'), PAGE_W - MARGIN_X, y + 50);
+
+    // 标题
+    ctx.font = '40px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "EmojiOne Color", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#3d2a35';
+    ctx.fillText(emoji, MARGIN_X, y + 40);
+
+    ctx.font = '800 30px "PingFang SC", "Songti SC", serif';
+    ctx.fillStyle = '#3d2a35';
+    ctx.fillText(title, MARGIN_X + 60, y + 40);
+
+    // 分割虚线
+    ctx.strokeStyle = 'rgba(255, 139, 122, 0.25)';
+    ctx.setLineDash([3, 5]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(MARGIN_X, y + 75);
+    ctx.lineTo(PAGE_W - MARGIN_X, y + 75);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    return y + 110;
+  };
+
+  // 富文本段落绘制(带自动分页)
+  const drawParagraph = (text, opts = {}) => {
+    const fontSize = opts.fontSize || 24;
+    const lineHeight = opts.lineHeight || 44;
+    const fontFamily = '"PingFang SC", "Songti SC", "Source Han Serif SC", serif';
+    const normalColor = opts.normalColor || '#5c4a56';
+    const boldColor = opts.boldColor || '#ff8b7a';
+
+    // 按行处理(text 里可能有 \n)
+    const paragraphs = text.split('\n');
+
+    paragraphs.forEach((para, pIdx) => {
+      if (para.trim() === '') {
+        cursorY += lineHeight * 0.5;
+        return;
+      }
+      const segments = parseBold(para);
+
+      // 逐字测量 + 分行
+      let curX = MARGIN_X;
+      page.ctx.textAlign = 'left';
+      page.ctx.textBaseline = 'alphabetic';
+
+      segments.forEach(seg => {
+        page.ctx.font = `${seg.bold ? '700' : '400'} ${fontSize}px ${fontFamily}`;
+        page.ctx.fillStyle = seg.bold ? boldColor : normalColor;
+        const chars = Array.from(seg.text);
+
+        for (let i = 0; i < chars.length; i++) {
+          const ch = chars[i];
+          const chW = page.ctx.measureText(ch).width;
+
+          // 换行判断
+          if (curX + chW > MARGIN_X + CONTENT_W) {
+            curX = MARGIN_X;
+            cursorY += lineHeight;
+          }
+
+          // 分页判断
+          if (cursorY > BOTTOM_LIMIT) {
+            pages.push(page);
+            page = newPage();
+            cursorY = 100;
+            curX = MARGIN_X;
+            // 重新设置 font,因为新 ctx
+            page.ctx.font = `${seg.bold ? '700' : '400'} ${fontSize}px ${fontFamily}`;
+            page.ctx.fillStyle = seg.bold ? boldColor : normalColor;
+            page.ctx.textAlign = 'left';
+            page.ctx.textBaseline = 'alphabetic';
+          }
+
+          page.ctx.fillText(ch, curX, cursorY);
+          curX += chW;
+        }
+      });
+
+      // 段落结束换行
+      cursorY += lineHeight;
+    });
+  };
+
+  // ====== 绘制每一章 ======
+  (r.chapters || []).forEach((ch, idx) => {
+    // 至少剩 200px 才在当前页放标题,否则新开一页
+    if (cursorY > BOTTOM_LIMIT - 200) {
+      pages.push(page);
+      page = newPage();
+      cursorY = 100;
+    }
+    cursorY = drawChapterTitle(page.ctx, ch.emoji || '✨', idx + 1, ch.title, cursorY);
+    drawParagraph(ch.content);
+    cursorY += 30;  // 章节间距
+  });
+
+  // ====== 珍藏锦囊 ======
+  if (r.essence && r.essence.length > 0) {
+    if (cursorY > BOTTOM_LIMIT - 200) {
+      pages.push(page);
+      page = newPage();
+      cursorY = 100;
+    }
+
+    // 锦囊标题
+    page.ctx.textAlign = 'center';
+    page.ctx.font = '40px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+    page.ctx.fillStyle = '#c9a36b';
+    page.ctx.fillText('💎', PAGE_W / 2, cursorY + 30);
+
+    page.ctx.font = '800 32px "PingFang SC", serif';
+    page.ctx.fillStyle = '#3d2a35';
+    page.ctx.fillText('珍 藏 锦 囊', PAGE_W / 2, cursorY + 80);
+
+    page.ctx.font = 'italic 500 18px "Cormorant Garamond", serif';
+    page.ctx.fillStyle = '#9a7a8d';
+    page.ctx.fillText('ESSENCE OF YOUR BOND', PAGE_W / 2, cursorY + 110);
+
+    // 分割线
+    page.ctx.strokeStyle = 'rgba(201, 163, 107, 0.3)';
+    page.ctx.beginPath();
+    page.ctx.moveTo(MARGIN_X + 100, cursorY + 140);
+    page.ctx.lineTo(PAGE_W - MARGIN_X - 100, cursorY + 140);
+    page.ctx.stroke();
+
+    cursorY += 180;
+    page.ctx.textAlign = 'left';
+
+    r.essence.forEach((item, idx) => {
+      // 检查分页
+      if (cursorY > BOTTOM_LIMIT - 100) {
+        pages.push(page);
+        page = newPage();
+        cursorY = 100;
+        page.ctx.textAlign = 'left';
+      }
+
+      // 序号
+      page.ctx.font = 'italic 700 36px "Cormorant Garamond", serif';
+      page.ctx.fillStyle = '#c9a36b';
+      page.ctx.fillText(String(idx + 1).padStart(2, '0'), MARGIN_X, cursorY + 10);
+
+      // 内容(带换行)
+      const startY = cursorY;
+      const itemMargin = MARGIN_X + 60;
+      const itemWidth = CONTENT_W - 60;
+
+      const segments = parseBold(item);
+      let curX = itemMargin;
+      const lh = 38;
+      page.ctx.textBaseline = 'alphabetic';
+
+      segments.forEach(seg => {
+        page.ctx.font = `${seg.bold ? '700' : '400'} 22px "PingFang SC", "Songti SC", serif`;
+        page.ctx.fillStyle = seg.bold ? '#ff8b7a' : '#3d2a35';
+        const chars = Array.from(seg.text);
+        for (let i = 0; i < chars.length; i++) {
+          const ch = chars[i];
+          const chW = page.ctx.measureText(ch).width;
+          if (curX + chW > itemMargin + itemWidth) {
+            curX = itemMargin;
+            cursorY += lh;
+          }
+          page.ctx.fillText(ch, curX, cursorY);
+          curX += chW;
+        }
+      });
+
+      // 虚线分隔
+      cursorY += 24;
+      if (idx < r.essence.length - 1) {
+        page.ctx.strokeStyle = 'rgba(201, 163, 107, 0.2)';
+        page.ctx.setLineDash([3, 5]);
+        page.ctx.beginPath();
+        page.ctx.moveTo(MARGIN_X, cursorY);
+        page.ctx.lineTo(PAGE_W - MARGIN_X, cursorY);
+        page.ctx.stroke();
+        page.ctx.setLineDash([]);
+        cursorY += 24;
+      }
+    });
+  }
+
+  // ====== 末页:出品人 + 引流 ======
+  if (cursorY > BOTTOM_LIMIT - 200) {
+    pages.push(page);
+    page = newPage();
+    cursorY = 100;
+  }
+
+  cursorY += 60;
+  page.ctx.textAlign = 'center';
+  page.ctx.strokeStyle = 'rgba(201, 163, 107, 0.4)';
+  page.ctx.beginPath();
+  page.ctx.moveTo(MARGIN_X + 100, cursorY);
+  page.ctx.lineTo(PAGE_W - MARGIN_X - 100, cursorY);
+  page.ctx.stroke();
+
+  cursorY += 50;
+  page.ctx.font = '500 22px "PingFang SC", serif';
+  page.ctx.fillStyle = '#6b4f60';
+  page.ctx.fillText('这份报告专属于你们 · 仅供参考', PAGE_W / 2, cursorY);
+
+  cursorY += 36;
+  page.ctx.fillText('愿你被爱,也勇敢去爱 💕', PAGE_W / 2, cursorY);
+
+  cursorY += 80;
+  const curLbl = 'CURATED  BY';
+  const xdNm = '小登哥 · XIAODENG';
+
+  page.ctx.font = '500 20px "Cormorant Garamond", serif';
+  const _curW = page.ctx.measureText(curLbl).width;
+  page.ctx.font = 'italic 700 24px "PingFang SC", "Songti SC", serif';
+  const _xdW = page.ctx.measureText(xdNm).width;
+  const _gap = 16;
+  const _total = _curW + _gap + _xdW;
+  const _start = (PAGE_W - _total) / 2;
+
+  page.ctx.textAlign = 'left';
+  page.ctx.font = '500 20px "Cormorant Garamond", serif';
+  page.ctx.fillStyle = '#9a7a8d';
+  page.ctx.fillText(curLbl, _start, cursorY);
+
+  page.ctx.font = 'italic 700 24px "PingFang SC", "Songti SC", serif';
+  page.ctx.fillStyle = '#c9a36b';
+  page.ctx.fillText(xdNm, _start + _curW + _gap, cursorY);
+
+  // 抖音引流
+  cursorY += 60;
+  page.ctx.textAlign = 'center';
+  page.ctx.font = '700 24px "PingFang SC", sans-serif';
+  page.ctx.fillStyle = '#ff8b7a';
+  page.ctx.fillText('抖音搜索:小登哥 ♐♏', PAGE_W / 2, cursorY);
+
+  pages.push(page);
+
+  return pages;
+}
+
+$('pdf-btn').addEventListener('click', async () => {
+  if (!currentReport) return;
+  $('pdf-btn').innerHTML = '<span class="action-btn-icon">⏳</span><span>生成中…</span>';
+
+  try {
+    await document.fonts.ready;
+    await new Promise(r => setTimeout(r, 100));
+
+    const pages = generatePdfPages();
+    if (!pages || pages.length === 0) throw new Error('未生成任何页面');
+
+    const { jsPDF } = window.jspdf;
+    // 用第一页的逻辑尺寸,实际像素是它的 2x
+    const firstCanvas = pages[0].canvas || pages[0];
+    const pageW = firstCanvas._logicalW || firstCanvas.width;
+    const pageH = firstCanvas._logicalH || firstCanvas.height;
+
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'px',
+      format: [pageW, pageH],
+      hotfixes: ['px_scaling'],
+      compress: true
+    });
+
+    pages.forEach((p, idx) => {
+      const c = p.canvas || p;
+      const pW = c._logicalW || c.width;
+      const pH = c._logicalH || c.height;
+      // 高质量 JPEG(2x 像素数据)
+      const imgData = c.toDataURL('image/jpeg', 0.95);
+      if (idx > 0) pdf.addPage([pW, pH], 'portrait');
+      // 高清像素压缩到逻辑尺寸 → retina 屏幕清晰
+      pdf.addImage(imgData, 'JPEG', 0, 0, pW, pH, undefined, 'MEDIUM');
+    });
+
+    pdf.save(`灵魂合盘-${currentForm.personA.name}-${currentForm.personB.name}.pdf`);
+  } catch (e) {
+    alert('PDF 生成失败:' + e.message);
+    console.error(e);
+  } finally {
+    $('pdf-btn').innerHTML = '<span class="action-btn-icon">📄</span><span>下载完整报告</span>';
+  }
+});
+</script>
+</body>
+</html>
