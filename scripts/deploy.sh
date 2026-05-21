@@ -10,13 +10,41 @@ NC='\033[0m'
 
 echo "===== 部署到生产环境 ====="
 
-# 加载环境变量
-if [ -f .env ]; then
-    export $(grep -v '^#' .env | xargs)
-else
-    echo "❌ 缺少 .env"
-    exit 1
+# 交互式配置（首次运行自动引导）
+if [ ! -f .env ]; then
+    echo -e "${YELLOW}⚠️ 未检测到 .env 配置文件，开始引导配置...${NC}"
+    echo ""
+    read -p "请输入 DeepSeek API Key (必填): " input_ai_key
+    read -p "请输入 Claude API Key (可选，直接回车跳过): " input_claude_key
+
+    cat > .env << EOF
+AI_API_KEY=${input_ai_key}
+AI_API_URL=https://api.deepseek.com/chat/completions
+AI_MODEL=deepseek-chat
+AI_MAX_TOKENS=8000
+AI_TIMEOUT_SECONDS=180
+CLAUDE_API_KEY=${input_claude_key}
+CLAUDE_API_URL=https://api.anthropic.com/v1/messages
+CLAUDE_MODEL=claude-sonnet-4-20250514
+CLAUDE_MAX_TOKENS=8000
+CLAUDE_TIMEOUT_SECONDS=180
+DB_URL=jdbc:h2:file:./data/zodiac_dewey;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;AUTO_SERVER=TRUE
+DB_USER=sa
+DB_PASSWORD=
+DB_DRIVER=org.h2.Driver
+HIBERNATE_DIALECT=org.hibernate.dialect.H2Dialect
+JPA_DDL_AUTO=update
+RATELIMIT_DAILY_TOTAL=200
+RATELIMIT_PER_IP=3
+RATELIMIT_ENABLED=true
+CORS_ALLOWED_ORIGINS=*
+SERVER_PORT=8080
+H2_CONSOLE_ENABLED=true
+EOF
+    echo -e "${GREEN}✅ .env 配置文件已生成${NC}"
 fi
+
+export $(grep -v '^#' .env | xargs)
 
 # 1. 拉最新代码
 echo "1. 拉取最新代码..."
@@ -38,7 +66,7 @@ echo "✓ 前端已部署到 $FRONTEND_DIR"
 
 # 4. 重启后端
 echo "4. 重启后端服务..."
-PID=$(ps -ef | grep zodiac-api.jar | grep -v grep | awk '{print $2}' || true)
+PID=$(ps -ef | grep zodiac-dewey.jar | grep -v grep | awk '{print $2}' || true)
 if [ -n "$PID" ]; then
     echo "停止旧进程 PID=$PID"
     kill "$PID"
