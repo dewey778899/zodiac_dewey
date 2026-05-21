@@ -31,8 +31,9 @@ cd ..
 # 3. 部署前端(假设 Nginx 已配置静态目录)
 echo "3. 部署前端..."
 FRONTEND_DIR=${FRONTEND_DIR:-/var/www/zodiac}
-sudo mkdir -p "$FRONTEND_DIR"
+sudo mkdir -p "$FRONTEND_DIR/img"
 sudo cp frontend/index.html "$FRONTEND_DIR/index.html"
+sudo cp -r frontend/img/* "$FRONTEND_DIR/img/"
 echo "✓ 前端已部署到 $FRONTEND_DIR"
 
 # 4. 重启后端
@@ -45,7 +46,7 @@ if [ -n "$PID" ]; then
 fi
 
 # 后台启动
-nohup java -Xms256m -Xmx512m -jar backend/target/zodiac-api.jar \
+nohup java -Xms256m -Xmx512m -jar backend/target/zodiac-dewey.jar \
     > logs/app.log 2>&1 &
 
 NEW_PID=$!
