@@ -1,0 +1,9 @@
+.git
+.workbuddy
+node_modules
+data
+*.db
+*.lock.db
+alipay.jpg
+wechat.jpg
+frontend/img/zodiac_rauto_qr_pretty.png
