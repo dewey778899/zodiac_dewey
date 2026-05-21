@@ -16,6 +16,9 @@ public class CompatibilityRequest {
     @NotNull(message = "请提供 TA 的信息")
     private Person personB;
 
+    /** 选择的模型: "deepseek" 或 "claude", 默认 "deepseek" */
+    private String model;
+
     @Data
     public static class Person {
         @NotBlank(message = "名字不能为空")

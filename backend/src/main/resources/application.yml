@@ -41,6 +41,12 @@ ai:
     model: ${AI_MODEL:deepseek-chat}
     max-tokens: ${AI_MAX_TOKENS:8000}
     timeout-seconds: ${AI_TIMEOUT_SECONDS:180}
+    claude:
+      key: ${CLAUDE_API_KEY:}
+      url: ${CLAUDE_API_URL:https://api.anthropic.com/v1/messages}
+      model: ${CLAUDE_MODEL:claude-sonnet-4-20250514}
+      max-tokens: ${CLAUDE_MAX_TOKENS:8000}
+      timeout-seconds: ${CLAUDE_TIMEOUT_SECONDS:180}
 
 # ============ 业务限流(防止 API 烧钱)============
 ratelimit:

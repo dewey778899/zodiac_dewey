@@ -39,7 +39,8 @@ public class CompatibilityService {
 
         String systemPrompt = buildSystemPrompt();
         String userPrompt = buildUserPrompt(request, triA, triB);
-        String raw = aiChatService.generate(systemPrompt, userPrompt);
+        String selectedModel = request.getModel() != null ? request.getModel() : "deepseek";
+        String raw = aiChatService.generate(systemPrompt, userPrompt, selectedModel);
 
         CompatibilityResponse response = parseResponse(raw, triA, triB);
 

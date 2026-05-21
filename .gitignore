@@ -19,7 +19,15 @@ logs/
 *.env
 
 # Local runtime data
+data/
 backend/data/
+
+# QR source images (root level, not frontend/img/)
+alipay.jpg
+wechat.jpg
+
+# WorkBuddy
+.workbuddy/
 
 # Build output
 dist/

@@ -643,6 +643,205 @@
   }
   .hidden { display: none !important; }
 
+  /* ============ Model Switcher ============ */
+  .model-switcher {
+    display: flex;
+    background: rgba(255,255,255,0.5);
+    border-radius: 100px;
+    padding: 4px;
+    margin-bottom: 20px;
+    border: 1.5px solid rgba(255,181,167,0.25);
+    position: relative;
+  }
+  .model-option {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    color: var(--ink-light);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .model-option.active {
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(155, 127, 199, 0.3);
+  }
+  .model-option .model-badge {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.8;
+    margin-left: 4px;
+  }
+  .model-option.active .model-badge {
+    opacity: 0.9;
+  }
+
+  /* ============ Payment Modal ============ */
+  .pay-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(40, 25, 50, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 1100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s;
+  }
+  .pay-modal {
+    background: white;
+    border-radius: 24px;
+    max-width: 360px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: var(--shadow-deep);
+  }
+  .pay-modal-header {
+    padding: 24px 24px 16px;
+    text-align: center;
+    position: relative;
+  }
+  .pay-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--ink-light);
+    transition: all 0.2s;
+  }
+  .pay-modal-close:hover {
+    background: rgba(0,0,0,0.1);
+  }
+  .pay-modal-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+  .pay-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .pay-modal-subtitle {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 4px;
+  }
+  .pay-modal-body {
+    padding: 0 24px 24px;
+  }
+  .pay-tab-group {
+    display: flex;
+    background: rgba(0,0,0,0.04);
+    border-radius: 100px;
+    padding: 3px;
+    margin-bottom: 20px;
+  }
+  .pay-tab {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.25s;
+    color: var(--ink-light);
+    cursor: pointer;
+  }
+  .pay-tab.active {
+    background: white;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .pay-qr-area {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .pay-qr-wrapper {
+    display: inline-block;
+    width: 180px;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(201, 163, 107, 0.2);
+    background: #fafafa;
+    position: relative;
+  }
+  .pay-qr-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .pay-price {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 12px 0;
+  }
+  .pay-steps {
+    text-align: left;
+    background: linear-gradient(135deg, #fff5f0, #f8ecf6);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .pay-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .pay-step + .pay-step {
+    margin-top: 8px;
+  }
+  .pay-step-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pay-confirm-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff8b7a 0%, #9b7fc7 100%);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 14px;
+    letter-spacing: 2px;
+    box-shadow: 0 6px 20px rgba(155, 127, 199, 0.3);
+    transition: all 0.2s;
+  }
+  .pay-confirm-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 3px 10px rgba(155, 127, 199, 0.3);
+  }
+
   /* ============ Share Modal ============ */
   .modal-overlay {
     position: fixed; inset: 0;
@@ -850,6 +1049,12 @@
       <div class="by-line">PRESENTED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
     </div>
 
+    <!-- 模型切换栏 -->
+    <div class="model-switcher" id="model-switcher">
+      <div class="model-option active" data-model="deepseek" id="model-deepseek">DeepSeek<span class="model-badge">· 免费</span></div>
+      <div class="model-option" data-model="claude" id="model-claude">Claude<span class="model-badge">· ¥9.9</span></div>
+    </div>
+
     <div class="card">
       <div class="person-section">
         <div class="person-title"><span class="dot"></span>关于你</div>
@@ -1054,6 +1259,45 @@
         <button class="modal-btn primary" id="share-download">下载图片</button>
       </div>
       <div class="modal-tip">下载后可转发到微信好友/朋友圈<br/>iOS 用户可长按图片直接保存</div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="pay-modal-overlay hidden" id="pay-modal">
+  <div class="pay-modal">
+    <div class="pay-modal-header">
+      <button class="pay-modal-close" id="pay-modal-close">✕</button>
+      <div class="pay-modal-icon">✨</div>
+      <div class="pay-modal-title">升级 Claude 解读</div>
+      <div class="pay-modal-subtitle">更深度、更细腻的 AI 解读体验</div>
+    </div>
+    <div class="pay-modal-body">
+      <div class="pay-tab-group">
+        <div class="pay-tab active" data-pay-method="wechat" id="pay-tab-wechat">微信支付</div>
+        <div class="pay-tab" data-pay-method="alipay" id="pay-tab-alipay">支付宝</div>
+      </div>
+      <div class="pay-qr-area">
+        <div class="pay-qr-wrapper">
+          <img id="pay-qr-img" src="img/wechat_qr.jpg" alt="支付二维码">
+        </div>
+      </div>
+      <div class="pay-price">¥9.90</div>
+      <div class="pay-steps">
+        <div class="pay-step">
+          <div class="pay-step-num">1</div>
+          <div>扫码支付 ¥9.90</div>
+        </div>
+        <div class="pay-step">
+          <div class="pay-step-num">2</div>
+          <div>截图支付凭证</div>
+        </div>
+        <div class="pay-step">
+          <div class="pay-step-num">3</div>
+          <div>联系确认后解锁 Claude 深度解读</div>
+        </div>
+      </div>
+      <button class="pay-confirm-btn" id="pay-confirm-btn">我已支付</button>
     </div>
   </div>
 </div>
@@ -1316,6 +1560,99 @@ function renderZodiacDetails(data, form, sunA, sunB) {
   `;
 }
 
+// ============ Model Switcher & Payment Modal ============
+let currentModel = localStorage.getItem('zodiac_model') || 'deepseek';
+
+function initModelSwitcher() {
+  const saved = localStorage.getItem('zodiac_model');
+  if (saved === 'claude') {
+    currentModel = 'claude';
+  } else {
+    currentModel = 'deepseek';
+  }
+  updateModelUI();
+}
+
+function updateModelUI() {
+  const deepseekBtn = document.getElementById('model-deepseek');
+  const claudeBtn = document.getElementById('model-claude');
+  if (!deepseekBtn || !claudeBtn) return;
+
+  if (currentModel === 'claude') {
+    deepseekBtn.classList.remove('active');
+    claudeBtn.classList.add('active');
+  } else {
+    deepseekBtn.classList.add('active');
+    claudeBtn.classList.remove('active');
+  }
+}
+
+function switchModel(model) {
+  if (model === 'claude') {
+    // Check if user already paid
+    const paid = localStorage.getItem('zodiac_claude_paid');
+    if (!paid) {
+      showPayModal();
+      return;
+    }
+  }
+  currentModel = model;
+  localStorage.setItem('zodiac_model', model);
+  updateModelUI();
+}
+
+function showPayModal() {
+  document.getElementById('pay-modal').classList.remove('hidden');
+}
+
+function hidePayModal() {
+  document.getElementById('pay-modal').classList.add('hidden');
+}
+
+// Model switcher click handlers
+document.querySelectorAll('.model-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const model = opt.dataset.model;
+    if (model === currentModel) return;
+    switchModel(model);
+  });
+});
+
+// Payment modal close
+document.getElementById('pay-modal-close').addEventListener('click', hidePayModal);
+
+// Click overlay to close
+document.getElementById('pay-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'pay-modal') hidePayModal();
+});
+
+// Payment tab switching
+document.querySelectorAll('.pay-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const method = tab.dataset.payMethod;
+    const qrImg = document.getElementById('pay-qr-img');
+    if (method === 'wechat') {
+      qrImg.src = 'img/wechat_qr.jpg';
+    } else {
+      qrImg.src = 'img/alipay_qr.jpg';
+    }
+  });
+});
+
+// "我已支付" button
+document.getElementById('pay-confirm-btn').addEventListener('click', () => {
+  localStorage.setItem('zodiac_claude_paid', '1');
+  currentModel = 'claude';
+  localStorage.setItem('zodiac_model', 'claude');
+  updateModelUI();
+  hidePayModal();
+});
+
+// Initialize model from localStorage on page load
+initModelSwitcher();
+
 // ============ API 调用 ============
 // 后端 API 地址:同域部署留空字符串,跨域填后端地址
 const API_BASE = (() => {
@@ -1330,7 +1667,7 @@ async function callCompatibilityApi(form) {
   const resp = await fetch(`${API_BASE}/api/compatibility`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(form)
+    body: JSON.stringify({...form, model: currentModel})
   });
   const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {
