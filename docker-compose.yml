@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  zodiac:
+    image: dewey778899/zodiac-dewey:latest
+    container_name: zodiac_dewey
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_API_URL=${AI_API_URL:-https://api.deepseek.com/chat/completions}
+      - AI_MODEL=${AI_MODEL:-deepseek-chat}
+      - AI_MAX_TOKENS=${AI_MAX_TOKENS:-8000}
+      - AI_TIMEOUT_SECONDS=${AI_TIMEOUT_SECONDS:-180}
+      - DB_URL=${DB_URL:-jdbc:h2:file:/app/data/zodiac_dewey;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE}
+      - DB_USER=${DB_USER:-sa}
+      - DB_PASSWORD=${DB_PASSWORD:-}
+      - DB_DRIVER=${DB_DRIVER:-org.h2.Driver}
+      - HIBERNATE_DIALECT=${HIBERNATE_DIALECT:-org.hibernate.dialect.H2Dialect}
+      - JPA_DDL_AUTO=${JPA_DDL_AUTO:-update}
+      - RATELIMIT_DAILY_TOTAL=${RATELIMIT_DAILY_TOTAL:-200}
+      - RATELIMIT_PER_IP=${RATELIMIT_PER_IP:-3}
+      - RATELIMIT_ENABLED=${RATELIMIT_ENABLED:-true}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-*}
+      - SERVER_PORT=8080
+    volumes:
+      - zodiac_data:/app/data
+
+volumes:
+  zodiac_data:

@@ -109,6 +109,64 @@ cd frontend && python3 -m http.server 5173
 
 ---
 
+## 🐳 Docker 一键部署（推荐）
+
+> **镜像地址：`dewey778899/zodiac-dewey:latest`**
+>
+> Docker Hub：[https://hub.docker.com/r/dewey778899/zodiac-dewey](https://hub.docker.com/r/dewey778899/zodiac-dewey)
+
+### 方式 A：docker run（最简）
+
+```bash
+docker run -d \
+  --name zodiac_dewey \
+  --restart unless-stopped \
+  -p 8080:8080 \
+  -e AI_API_KEY=你的DeepSeek密钥 \
+  -v zodiac_data:/app/data \
+  dewey778899/zodiac-dewey:latest
+```
+
+访问 `http://服务器IP:8080`
+
+### 方式 B：docker-compose（推荐）
+
+```bash
+# 1. 下载 docker-compose.yml
+curl -O https://raw.githubusercontent.com/dewey778899/zodiac_dewey/main/docker-compose.yml
+
+# 2. 创建 .env 配置文件
+cat > .env << EOF
+AI_API_KEY=你的DeepSeek密钥
+AI_API_URL=https://api.deepseek.com/chat/completions
+AI_MODEL=deepseek-chat
+RATELIMIT_DAILY_TOTAL=200
+RATELIMIT_PER_IP=3
+CORS_ALLOWED_ORIGINS=*
+EOF
+
+# 3. 启动
+docker-compose up -d
+
+# 4. 查看日志
+docker-compose logs -f
+```
+
+### 升级镜像
+
+```bash
+docker-compose pull && docker-compose up -d
+```
+
+### 镜像自动构建
+
+每次推送到 `main` 分支，GitHub Actions 自动构建并更新 Docker Hub 镜像。
+> ⚠️ **首次部署前**：需要在 GitHub → Settings → Secrets 中添加：
+> - `DOCKERHUB_USERNAME` = `dewey778899`
+> - `DOCKERHUB_TOKEN` = 你的 Docker Hub Access Token
+
+---
+
 ## 🌐 生产部署(ECS 服务器)
 
 详见 **[docs/DEPLOY.md](docs/DEPLOY.md)**
