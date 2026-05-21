@@ -111,9 +111,9 @@ cd frontend && python3 -m http.server 5173
 
 ## 🐳 Docker 一键部署（推荐）
 
-> **镜像地址：`dewey778899/zodiac-dewey:latest`**
+> **镜像地址：`dwaigx/zodiac-dewey:latest`**
 >
-> Docker Hub：[https://hub.docker.com/r/dewey778899/zodiac-dewey](https://hub.docker.com/r/dewey778899/zodiac-dewey)
+> Docker Hub：[https://hub.docker.com/r/dwaigx/zodiac-dewey](https://hub.docker.com/r/dwaigx/zodiac-dewey)
 
 ### 方式 A：docker run（最简）
 
@@ -124,7 +124,7 @@ docker run -d \
   -p 8080:8080 \
   -e AI_API_KEY=你的DeepSeek密钥 \
   -v zodiac_data:/app/data \
-  dewey778899/zodiac-dewey:latest
+  dwaigx/zodiac-dewey:latest
 ```
 
 访问 `http://服务器IP:8080`
@@ -162,7 +162,7 @@ docker-compose pull && docker-compose up -d
 
 每次推送到 `main` 分支，GitHub Actions 自动构建并更新 Docker Hub 镜像。
 > ⚠️ **首次部署前**：需要在 GitHub → Settings → Secrets 中添加：
-> - `DOCKERHUB_USERNAME` = `dewey778899`
+> - `DOCKERHUB_USERNAME` = `dwaigx`
 > - `DOCKERHUB_TOKEN` = 你的 Docker Hub Access Token
 
 ---

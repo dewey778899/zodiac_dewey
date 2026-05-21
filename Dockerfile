@@ -9,7 +9,7 @@ RUN mvn clean package -DskipTests -B
 
 # ---- Stage 2: Runtime ----
 FROM eclipse-temurin:17-jre-alpine
-LABEL maintainer="dewey778899"
+LABEL maintainer="dwaigx"
 LABEL description="小登哥的灵魂合盘 - Soulmate Compatibility H5 App"
 
 WORKDIR /app

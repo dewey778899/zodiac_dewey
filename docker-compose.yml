@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   zodiac:
-    image: ghcr.io/dewey778899/zodiac_dewey:latest
+    image: dwaigx/zodiac-dewey:latest
     container_name: zodiac_dewey
     restart: unless-stopped
     ports:
