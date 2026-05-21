@@ -1656,9 +1656,17 @@ initModelSwitcher();
 // ============ API 调用 ============
 // 后端 API 地址:同域部署留空字符串,跨域填后端地址
 const API_BASE = (() => {
+  // 通过代理端口(3000)访问时，API 同域，不需要跨域
+  if (location.port === '3000') {
+    return '';
+  }
   // 本地开发自动指向 8080
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
     return location.port === '8080' ? '' : 'http://localhost:8080';
+  }
+  // 局域网直接访问 5173 时，API 指向后端 IP
+  if (location.hostname.startsWith('10.') || location.hostname.startsWith('192.168.') || location.hostname.startsWith('172.')) {
+    return 'http://' + location.hostname + ':8080';
   }
   return '';  // 生产环境同域
 })();
