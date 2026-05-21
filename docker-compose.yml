@@ -1,12 +1,10 @@
 version: "3.9"
 
 services:
-  zodiac:
-    image: dwaigx/zodiac-dewey:latest
-    container_name: zodiac_dewey
+  backend:
+    image: dwaigx/zodiac-dewey-backend:latest
+    container_name: zodiac_backend
     restart: unless-stopped
-    ports:
-      - "8080:8080"
     environment:
       - AI_API_KEY=${AI_API_KEY}
       - AI_API_URL=${AI_API_URL:-https://api.deepseek.com/chat/completions}
@@ -24,13 +22,32 @@ services:
       - RATELIMIT_ENABLED=${RATELIMIT_ENABLED:-true}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-*}
       - SERVER_PORT=8080
-      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
       - CLAUDE_API_URL=${CLAUDE_API_URL:-https://api.anthropic.com/v1/messages}
-      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-sonnet-4-20250514}
+      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}
       - CLAUDE_MAX_TOKENS=${CLAUDE_MAX_TOKENS:-8000}
       - CLAUDE_TIMEOUT_SECONDS=${CLAUDE_TIMEOUT_SECONDS:-180}
+      - AI_PROXY_HOST=${AI_PROXY_HOST:-}
+      - AI_PROXY_PORT=${AI_PROXY_PORT:-0}
     volumes:
       - zodiac_data:/app/data
+    networks:
+      - zodiac-net
+
+  frontend:
+    image: dwaigx/zodiac-dewey-frontend:latest
+    container_name: zodiac_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - zodiac-net
 
 volumes:
   zodiac_data:
+
+networks:
+  zodiac-net:
+    driver: bridge

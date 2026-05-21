@@ -46,7 +46,7 @@ public class AiChatService {
     @Value("${ai.api.claude.url:https://api.anthropic.com/v1/messages}")
     private String claudeApiUrl;
 
-    @Value("${ai.api.claude.model:claude-sonnet-4-5-20250929}")
+    @Value("${ai.api.claude.model:claude-opus-4-7}")
     private String claudeModel;
 
     @Value("${ai.api.claude.max-tokens:8000}")
@@ -144,11 +144,11 @@ public class AiChatService {
         if (claudeApiKey == null || claudeApiKey.isBlank()) {
             throw new AiServiceException(
                     AiServiceException.Reason.MISCONFIGURED,
-                    "CLAUDE_API_KEY 未配置，无法使用 Claude 模型。"
+                    "CLAUDE_API_KEY 未配置，无法使用深度解析模型。"
             );
         }
         return executeWithRetry(
-                "Claude",
+                "Opus 4.7",
                 () -> getClaudeWebClient().post()
                         .uri(claudeApiUrl)
                         .header("x-api-key", claudeApiKey)
@@ -182,7 +182,7 @@ public class AiChatService {
                 return text;
             }
         }
-        throw new AiServiceException(AiServiceException.Reason.INVALID_RESPONSE, "Claude 返回内容为空或格式异常。");
+        throw new AiServiceException(AiServiceException.Reason.INVALID_RESPONSE, "Opus 4.7 返回内容为空或格式异常。");
     }
 
     private WebClient getClaudeWebClient() {

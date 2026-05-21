@@ -174,25 +174,152 @@
   .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* ============ Loading ============ */
-  .loading { text-align: center; padding: 80px 20px; }
-  .loading-orb {
-    width: 80px; height: 80px; margin: 0 auto 30px; border-radius: 50%;
-    background: conic-gradient(from 0deg, #ff8b7a, #ffb5a7, #c8b6e2, #9b7fc7, #ff8b7a);
-    animation: spin 2s linear infinite; position: relative;
+  .loading { padding: 52px 18px 28px; }
+  .loading-card {
+    position: relative;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 30px 22px 24px;
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at top right, rgba(255,181,167,0.28), transparent 34%),
+      linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,248,252,0.9));
+    border: 1px solid rgba(255,255,255,0.82);
+    box-shadow: var(--shadow-deep);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
   }
-  .loading-orb::after {
-    content: ""; position: absolute; inset: 8px;
-    background: linear-gradient(135deg, #fff5f0, #fde4ea); border-radius: 50%;
+  .loading-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(155,127,199,0.04));
+    pointer-events: none;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-  .loading-sub { font-size: 13px; color: var(--ink-light); margin-bottom: 24px; }
-  .loading-tips {
-    font-size: 13px; color: var(--lilac-deep);
-    background: rgba(255,255,255,0.5); padding: 12px 16px; border-radius: 12px;
-    display: inline-block; animation: tipsFade 4s ease-in-out infinite;
+  .loading-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    margin-bottom: 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.74);
+    border: 1px solid rgba(255,181,167,0.38);
+    color: var(--peach-deep);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
   }
-  @keyframes tipsFade { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+  .loading-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px;
+    font-family: "Noto Serif SC", serif;
+  }
+  .loading-sub {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.8;
+    margin-bottom: 22px;
+  }
+  .loading-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .loading-progress-label {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .loading-progress-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--peach-deep);
+  }
+  .loading-progress-track {
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(155,127,199,0.14);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(120,91,163,0.08);
+  }
+  .loading-progress-fill {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff8b7a 0%, #ffb58a 45%, #9b7fc7 100%);
+    box-shadow: 0 6px 18px rgba(155,127,199,0.32);
+    transition: width 0.45s ease;
+  }
+  .loading-steps {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+  .loading-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.62);
+    border: 1px solid rgba(155,127,199,0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  .loading-step.pending { opacity: 0.82; }
+  .loading-step.active {
+    background: linear-gradient(135deg, rgba(255,245,240,0.96), rgba(244,232,250,0.96));
+    border-color: rgba(255,181,167,0.42);
+    box-shadow: 0 12px 24px rgba(155,127,199,0.12);
+    transform: translateY(-1px);
+    opacity: 1;
+  }
+  .loading-step.completed {
+    background: linear-gradient(135deg, rgba(241,252,245,0.98), rgba(250,255,251,0.96));
+    border-color: rgba(91,193,128,0.26);
+    opacity: 1;
+  }
+  .loading-step-status {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(155,127,199,0.12);
+    color: var(--lilac-deep);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .loading-step.active .loading-step-status {
+    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(155,127,199,0.22);
+  }
+  .loading-step.completed .loading-step-status {
+    background: linear-gradient(135deg, #58c88a, #7cda74);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(88,200,138,0.22);
+  }
+  .loading-step-copy { flex: 1; }
+  .loading-step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .loading-step-sub {
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--ink-light);
+  }
 
   /* ============ Report COVER (珍藏感升级核心) ============ */
   .cover {
@@ -498,67 +625,6 @@
   .zd-divider { width: 1px; background: linear-gradient(180deg, transparent, rgba(201, 163, 107, 0.4), transparent); }
   .zd-foot { text-align: center; font-size: 11px; color: var(--ink-soft); margin-top: 14px; line-height: 1.6; }
 
-  /* ============ Wechat Modal ============ */
-  .wechat-prompt {
-    margin-top: 20px;
-    padding: 22px 24px;
-    background: linear-gradient(135deg, #fff5f0 0%, #f8ecf6 100%);
-    border: 1.5px solid var(--gold-light);
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: var(--shadow-card);
-  }
-  .wechat-prompt-icon {
-    font-size: 30px;
-    margin-bottom: 8px;
-  }
-  .wechat-prompt-title {
-    font-size: 16px; font-weight: 700; color: var(--ink);
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-  }
-  .wechat-prompt-sub {
-    font-size: 13px; color: var(--ink-light); line-height: 1.8;
-    margin-bottom: 16px;
-  }
-  .wechat-input-row {
-    display: flex; gap: 8px;
-    margin-bottom: 8px;
-  }
-  .wechat-input {
-    flex: 1;
-    padding: 12px 14px;
-    border: 1.5px solid rgba(255,181,167,0.4);
-    border-radius: 12px;
-    font-size: 14px;
-    background: white;
-    outline: none;
-    font-family: inherit;
-  }
-  .wechat-input:focus {
-    border-color: var(--peach-deep);
-    box-shadow: 0 0 0 4px rgba(255,181,167,0.15);
-  }
-  .wechat-submit {
-    padding: 12px 22px;
-    background: linear-gradient(135deg, #ff8b7a, #9b7fc7);
-    color: white;
-    border-radius: 12px;
-    font-size: 14px; font-weight: 700;
-    white-space: nowrap;
-  }
-  .wechat-msg {
-    font-size: 12px; color: var(--lilac-deep);
-    margin-top: 8px;
-    min-height: 16px;
-  }
-  .wechat-msg.success { color: #4caf50; }
-  .wechat-msg.error { color: #c44; }
-  .wechat-prompt.done {
-    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-    border-color: #a5d6a7;
-  }
-
   /* ============ Action Bar (分享/下载/再测) ============ */
   .action-bar {
     margin-top: 32px;
@@ -742,37 +808,26 @@
   .pay-modal-body {
     padding: 0 24px 24px;
   }
-  .pay-tab-group {
-    display: flex;
-    background: rgba(0,0,0,0.04);
-    border-radius: 100px;
-    padding: 3px;
-    margin-bottom: 20px;
-  }
-  .pay-tab {
-    flex: 1;
-    padding: 8px 12px;
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    transition: all 0.25s;
-    color: var(--ink-light);
-    cursor: pointer;
-  }
-  .pay-tab.active {
-    background: white;
-    color: var(--ink);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
   .pay-qr-area {
-    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
     margin-bottom: 16px;
   }
+  .pay-qr-card {
+    text-align: center;
+  }
+  .pay-qr-label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
   .pay-qr-wrapper {
-    display: inline-block;
-    width: 180px;
-    height: 180px;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 12px;
     overflow: hidden;
     border: 2px solid rgba(201, 163, 107, 0.2);
@@ -782,8 +837,13 @@
   .pay-qr-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
+  }
+  @media (max-width: 420px) {
+    .pay-qr-area {
+      grid-template-columns: 1fr;
+    }
   }
   .pay-price {
     font-size: 28px;
@@ -1052,14 +1112,14 @@
     <!-- 模型切换栏 -->
     <div class="model-switcher" id="model-switcher">
       <div class="model-option active" data-model="deepseek" id="model-deepseek">DeepSeek<span class="model-badge">· 免费</span></div>
-      <div class="model-option" data-model="claude" id="model-claude">Claude<span class="model-badge">· ¥9.9</span></div>
+      <div class="model-option" data-model="claude" id="model-claude">深度解析<span class="model-badge">· Opus 4.7</span></div>
     </div>
 
     <div class="card">
       <div class="person-section">
         <div class="person-title"><span class="dot"></span>关于你</div>
         <div class="field">
-          <label class="field-label">你的名字</label>
+          <label class="field-label">你的名字(昵称)</label>
           <input class="input" id="a-name" placeholder="请输入名字" maxlength="20">
           <div class="quick-fill">
             <button type="button" class="quick-fill-btn" data-demo="dewey">🎯 体验:dewey</button>
@@ -1075,12 +1135,12 @@
         </div>
         <div class="field">
           <label class="field-label">生日</label>
-          <input class="input" id="a-birthdate" type="date" max="2010-12-31" min="1950-01-01">
+          <input class="input" id="a-birthdate" type="date" max="2010-12-31" min="1950-01-01" value="1990-06-15">
         </div>
         <div class="field-row">
           <div class="field">
             <label class="field-label">出生时间 <span class="opt">(算月亮上升用)</span></label>
-            <input class="input" id="a-birthtime" type="time">
+            <input class="input" id="a-birthtime" type="time" value="12:30">
           </div>
           <div class="field">
             <label class="field-label">出生城市 <span class="opt">(可选)</span></label>
@@ -1092,7 +1152,7 @@
       <div class="person-section">
         <div class="person-title purple"><span class="dot"></span>关于 TA</div>
         <div class="field">
-          <label class="field-label">TA 的名字</label>
+          <label class="field-label">TA的名字(昵称)</label>
           <input class="input" id="b-name" placeholder="请输入名字" maxlength="20">
           <div class="quick-fill">
             <button type="button" class="quick-fill-btn" data-demo="snow">🎯 体验:snow</button>
@@ -1108,12 +1168,12 @@
         </div>
         <div class="field">
           <label class="field-label">生日</label>
-          <input class="input" id="b-birthdate" type="date" max="2010-12-31" min="1950-01-01">
+          <input class="input" id="b-birthdate" type="date" max="2010-12-31" min="1950-01-01" value="1990-06-15">
         </div>
         <div class="field-row">
           <div class="field">
             <label class="field-label">出生时间 <span class="opt">(算月亮上升用)</span></label>
-            <input class="input" id="b-birthtime" type="time">
+            <input class="input" id="b-birthtime" type="time" value="12:30">
           </div>
           <div class="field">
             <label class="field-label">出生城市 <span class="opt">(可选)</span></label>
@@ -1123,17 +1183,26 @@
       </div>
     </div>
 
-    <button class="submit-btn" id="submit-btn">✨ 解锁我们的灵魂合盘</button>
+    <button class="submit-btn" id="submit-btn">✨ 解析我们的灵魂合盘</button>
     <div id="form-error" class="error-box hidden"></div>
   </div>
 
   <!-- ============== Page 2: Loading ============== -->
   <div id="page-loading" class="page hidden">
     <div class="loading">
-      <div class="loading-orb"></div>
-      <div class="loading-title">正在测算你们的缘分</div>
-      <div class="loading-sub">大约需要 30-60 秒,请耐心等待…</div>
-      <div class="loading-tips" id="loading-tips">✨ 正在解读双方星盘…</div>
+      <div class="loading-card">
+        <div class="loading-badge">REPORT IN PROGRESS</div>
+        <div class="loading-title">正在生成你们的合盘报告</div>
+        <div class="loading-sub">每一步都会展示出来，完成后会自动打勾。整个过程大约需要 30-60 秒，请稍等一下。</div>
+        <div class="loading-progress-head">
+          <div class="loading-progress-label" id="loading-progress-label">准备开始...</div>
+          <div class="loading-progress-value" id="loading-progress-value">0%</div>
+        </div>
+        <div class="loading-progress-track">
+          <div class="loading-progress-fill" id="loading-progress-fill"></div>
+        </div>
+        <div class="loading-steps" id="loading-steps"></div>
+      </div>
     </div>
   </div>
 
@@ -1182,9 +1251,9 @@
         <div class="cover-tagline" id="cover-tagline">—</div>
 
         <div class="cover-meta">
-          <div class="cover-meta-id" id="cover-id">N° XX-XXXX-XXXX</div>
+          <div class="cover-meta-id" id="cover-id">珍藏编号 · SASC-000000-PF4E</div>
           <div class="cover-meta-date" id="cover-date">— · — · —</div>
-          <div class="cover-by">CURATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
+          <div class="cover-by">CREATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
         </div>
       </div>
 
@@ -1222,25 +1291,10 @@
       <button class="restart-btn-full" id="restart-btn">为另一对再测一次</button>
     </div>
 
-    <!-- 微信号收集(私域引流) -->
-    <div class="wechat-prompt" id="wechat-prompt">
-      <div class="wechat-prompt-icon">💌</div>
-      <div class="wechat-prompt-title">想要小登哥亲自帮你解读?</div>
-      <div class="wechat-prompt-sub">
-        留下微信号,有空我会针对你们的情况给你一对一回复<br/>
-        <span style="font-size:11px;opacity:0.7;">(完全免费 · 不会乱加 · 一周内回复)</span>
-      </div>
-      <div class="wechat-input-row">
-        <input class="wechat-input" id="wechat-input" placeholder="微信号 / 抖音号" maxlength="50">
-        <button class="wechat-submit" id="wechat-submit">提交</button>
-      </div>
-      <div class="wechat-msg" id="wechat-msg"></div>
-    </div>
-
     <div class="report-footer">
       <div class="note">这份报告专属于你们 · 仅供参考</div>
       <div class="note">愿你被爱,也勇敢去爱 💕</div>
-      <div class="by">CURATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
+      <div class="by">CREATED BY <span class="name">小登哥 ⋅ XIAODENG</span></div>
     </div>
   </div>
 </div>
@@ -1269,17 +1323,22 @@
     <div class="pay-modal-header">
       <button class="pay-modal-close" id="pay-modal-close">✕</button>
       <div class="pay-modal-icon">✨</div>
-      <div class="pay-modal-title">升级 Claude 解读</div>
-      <div class="pay-modal-subtitle">更深度、更细腻的 AI 解读体验</div>
+      <div class="pay-modal-title">升级深度解析</div>
+      <div class="pay-modal-subtitle">使用 Opus 4.7 带来更深度、更细腻的解读体验</div>
     </div>
     <div class="pay-modal-body">
-      <div class="pay-tab-group">
-        <div class="pay-tab active" data-pay-method="wechat" id="pay-tab-wechat">微信支付</div>
-        <div class="pay-tab" data-pay-method="alipay" id="pay-tab-alipay">支付宝</div>
-      </div>
       <div class="pay-qr-area">
-        <div class="pay-qr-wrapper">
-          <img id="pay-qr-img" src="img/wechat_qr.jpg" alt="支付二维码">
+        <div class="pay-qr-card">
+          <div class="pay-qr-label">微信支付</div>
+          <div class="pay-qr-wrapper">
+            <img src="img/wechat_qr.jpg" alt="微信支付二维码">
+          </div>
+        </div>
+        <div class="pay-qr-card">
+          <div class="pay-qr-label">支付宝</div>
+          <div class="pay-qr-wrapper">
+            <img src="img/alipay_qr.jpg" alt="支付宝二维码">
+          </div>
         </div>
       </div>
       <div class="pay-price">¥9.90</div>
@@ -1294,7 +1353,7 @@
         </div>
         <div class="pay-step">
           <div class="pay-step-num">3</div>
-          <div>联系确认后解锁 Claude 深度解读</div>
+          <div>联系确认后解锁深度解析（Opus 4.7）</div>
         </div>
       </div>
       <button class="pay-confirm-btn" id="pay-confirm-btn">我已支付</button>
@@ -1342,7 +1401,7 @@ function computeZodiac(birthDate) {
   return '双鱼座';
 }
 
-// ============ (报告由真实 Claude API 生成) ============
+// ============ (报告由真实 DeepSeek / Opus 4.7 API 生成) ============
 
 
 // ============ Helpers ============
@@ -1354,9 +1413,11 @@ const switchPage = (pageId) => {
   window.scrollTo(0, 0);
 };
 
-// ============ Unique ID Generator ============
-// 编号格式:N° ZODIAC-DATE-DICE  例如:N° SCSG-260518-A7K9
-// SCSG = Scorpio + Sagittarius 缩写,260518 = 日期,A7K9 = 4位随机
+// ============ Collector ID Generator ============
+// 编号格式:珍藏编号 · ZODIAC-DATE-DICE
+// 例如:珍藏编号 · SASC-260521-PF4E
+const REPORT_ID_LABEL = '珍藏编号 · ';
+
 function generateUniqueId(zA, zB) {
   const codeA = (ZODIAC_INFO[zA]?.en || 'XX').substring(0,2);
   const codeB = (ZODIAC_INFO[zB]?.en || 'XX').substring(0,2);
@@ -1368,7 +1429,19 @@ function generateUniqueId(zA, zB) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let rand = '';
   for (let i=0; i<4; i++) rand += chars[Math.floor(Math.random()*chars.length)];
-  return `N° ${codeA}${codeB}-${date}-${rand}`;
+  return `${codeA}${codeB}-${date}-${rand}`;
+}
+
+function formatReportUid(rawId, zA, zB) {
+  const source = String(rawId || '')
+    .toUpperCase()
+    .replace(/^N[°O]\s*/,'')
+    .replace(/^珍藏编号\s*[·•]?\s*/,'')
+    .replace(/^COLLECTOR(?:'S)?\s+(?:EDITION|NO\.?)\s*[·•]?\s*/,'')
+    .trim();
+  const match = source.match(/[A-Z0-9]{2,6}-\d{6}-[A-Z0-9]{4,6}/);
+  const code = match ? match[0] : generateUniqueId(zA, zB);
+  return `${REPORT_ID_LABEL}${code}`;
 }
 
 function formatDate(d = new Date()) {
@@ -1450,13 +1523,109 @@ function validate(d) {
   return null;
 }
 
-const tipsList = ['✨ 正在解读双方星盘…','🌙 计算月亮和金星的位置…','💕 分析你们的星座化学反应…','🔮 推算关键节点和未来走向…','💌 写下专属于你们的悄悄话…'];
-let tipIdx=0, tipTimer=null;
-function startTips() {
-  tipIdx=0; $('loading-tips').textContent=tipsList[0];
-  tipTimer = setInterval(() => { tipIdx=(tipIdx+1)%tipsList.length; $('loading-tips').textContent=tipsList[tipIdx]; }, 3000);
+const LOADING_STEPS = [
+  { title: '读取双方基础信息', desc: '核对两人的姓名、性别和出生日期' },
+  { title: '计算太阳 / 月亮 / 上升', desc: '整理星盘核心位置，建立你们的基础画像' },
+  { title: '分析彼此吸引力', desc: '比对情绪表达、互动节奏与亲密磁场' },
+  { title: '生成相处建议', desc: '提炼更适合你们的沟通方式与甜蜜提示' },
+  { title: '整理完整报告', desc: '汇总分数、章节内容与最终结论' }
+];
+const LOADING_PROGRESS_TARGETS = [18, 38, 58, 78, 92];
+let loadingProgress = 0;
+let loadingTimer = null;
+
+function renderLoadingSteps() {
+  const container = $('loading-steps');
+  if (!container) return;
+  container.innerHTML = LOADING_STEPS.map((step, index) => `
+    <div class="loading-step pending" data-step="${index}">
+      <div class="loading-step-status">${String(index + 1).padStart(2, '0')}</div>
+      <div class="loading-step-copy">
+        <div class="loading-step-title">${step.title}</div>
+        <div class="loading-step-sub">${step.desc}</div>
+      </div>
+    </div>
+  `).join('');
 }
-function stopTips() { if (tipTimer) clearInterval(tipTimer); }
+
+function getLoadingStepIndex(progress) {
+  for (let i = 0; i < LOADING_PROGRESS_TARGETS.length; i += 1) {
+    if (progress < LOADING_PROGRESS_TARGETS[i]) return i;
+  }
+  return LOADING_STEPS.length - 1;
+}
+
+function updateLoadingUI(stepIndex, progress) {
+  const percent = Math.max(0, Math.min(100, Math.round(progress)));
+  const fill = $('loading-progress-fill');
+  const label = $('loading-progress-label');
+  const value = $('loading-progress-value');
+
+  if (fill) fill.style.width = `${percent}%`;
+  if (value) value.textContent = `${percent}%`;
+
+  if (label) {
+    if (stepIndex < 0) {
+      label.textContent = '准备开始...';
+    } else if (stepIndex >= LOADING_STEPS.length) {
+      label.textContent = '全部完成，马上展示报告';
+    } else {
+      label.textContent = `正在：${LOADING_STEPS[stepIndex].title}`;
+    }
+  }
+
+  document.querySelectorAll('.loading-step').forEach((item, index) => {
+    item.classList.remove('pending', 'active', 'completed');
+    const status = item.querySelector('.loading-step-status');
+
+    if (stepIndex >= LOADING_STEPS.length || index < stepIndex) {
+      item.classList.add('completed');
+      if (status) status.textContent = '✓';
+      return;
+    }
+
+    if (index === stepIndex) {
+      item.classList.add('active');
+      if (status) status.textContent = '···';
+      return;
+    }
+
+    item.classList.add('pending');
+    if (status) status.textContent = String(index + 1).padStart(2, '0');
+  });
+}
+
+function startLoadingProgress() {
+  stopLoadingProgress();
+  loadingProgress = 8;
+  updateLoadingUI(0, loadingProgress);
+
+  loadingTimer = setInterval(() => {
+    const increment = loadingProgress < 38 ? 5 : loadingProgress < 68 ? 4 : loadingProgress < 88 ? 3 : 1;
+    loadingProgress = Math.min(94, loadingProgress + increment);
+    updateLoadingUI(getLoadingStepIndex(loadingProgress), loadingProgress);
+  }, 900);
+}
+
+function stopLoadingProgress() {
+  if (loadingTimer) clearInterval(loadingTimer);
+  loadingTimer = null;
+}
+
+function completeLoadingProgress() {
+  stopLoadingProgress();
+  loadingProgress = 100;
+  updateLoadingUI(LOADING_STEPS.length, loadingProgress);
+}
+
+function resetLoadingProgress() {
+  stopLoadingProgress();
+  loadingProgress = 0;
+  renderLoadingSteps();
+  updateLoadingUI(-1, 0);
+}
+
+resetLoadingProgress();
 
 function renderInline(t) {
   if (!t) return '';
@@ -1485,7 +1654,7 @@ function renderReport(data, form) {
   $('cover-tagline').textContent = data.tagline || '';
 
   // 用后端返回的 uid;若无则前端兜底生成
-  const uid = data.reportUid || generateUniqueId(sunA, sunB);
+  const uid = formatReportUid(data.reportUid, sunA, sunB);
   $('cover-id').textContent = uid;
   $('cover-date').textContent = formatDate();
   currentReport._uid = uid;
@@ -1626,21 +1795,6 @@ document.getElementById('pay-modal').addEventListener('click', (e) => {
   if (e.target.id === 'pay-modal') hidePayModal();
 });
 
-// Payment tab switching
-document.querySelectorAll('.pay-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const method = tab.dataset.payMethod;
-    const qrImg = document.getElementById('pay-qr-img');
-    if (method === 'wechat') {
-      qrImg.src = 'img/wechat_qr.jpg';
-    } else {
-      qrImg.src = 'img/alipay_qr.jpg';
-    }
-  });
-});
-
 // "我已支付" button
 document.getElementById('pay-confirm-btn').addEventListener('click', () => {
   localStorage.setItem('zodiac_claude_paid', '1');
@@ -1656,15 +1810,15 @@ initModelSwitcher();
 // ============ API 调用 ============
 // 后端 API 地址:同域部署留空字符串,跨域填后端地址
 const API_BASE = (() => {
-  // 通过代理端口(3000)访问时，API 同域，不需要跨域
-  if (location.port === '3000') {
+  // Nginx 代理部署（端口 80 或 443）：API 同域，无需跨域
+  if (!location.port || location.port === '80' || location.port === '443') {
     return '';
   }
-  // 本地开发自动指向 8080
+  // 本地开发：前端在 5173，后端在 8080
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
     return location.port === '8080' ? '' : 'http://localhost:8080';
   }
-  // 局域网直接访问 5173 时，API 指向后端 IP
+  // 局域网访问 5173 时，API 指向后端 IP
   if (location.hostname.startsWith('10.') || location.hostname.startsWith('192.168.') || location.hostname.startsWith('172.')) {
     return 'http://' + location.hostname + ':8080';
   }
@@ -1693,15 +1847,18 @@ $('submit-btn').addEventListener('click', async () => {
   const err = validate(form);
   if (err) { $('form-error').textContent = err; show('form-error'); return; }
 
-  switchPage('page-loading'); startTips();
+  switchPage('page-loading');
+  startLoadingProgress();
 
   try {
     const report = await callCompatibilityApi(form);
-    stopTips();
+    completeLoadingProgress();
     renderReport(report, form);
+    await new Promise(resolve => setTimeout(resolve, 450));
     switchPage('page-report');
+    resetLoadingProgress();
   } catch (e) {
-    stopTips();
+    resetLoadingProgress();
     switchPage('page-form');
     $('form-error').textContent = e.message || '生成失败,请稍后再试';
     show('form-error');
@@ -1709,24 +1866,7 @@ $('submit-btn').addEventListener('click', async () => {
 });
 
 $('restart-btn').addEventListener('click', () => {
-  // 重置微信号面板
-  const prompt = document.getElementById('wechat-prompt');
-  if (prompt) {
-    prompt.classList.remove('done');
-    prompt.innerHTML = `
-      <div class="wechat-prompt-icon">💌</div>
-      <div class="wechat-prompt-title">想要小登哥亲自帮你解读?</div>
-      <div class="wechat-prompt-sub">
-        留下微信号,有空我会针对你们的情况给你一对一回复<br/>
-        <span style="font-size:11px;opacity:0.7;">(完全免费 · 不会乱加 · 一周内回复)</span>
-      </div>
-      <div class="wechat-input-row">
-        <input class="wechat-input" id="wechat-input" placeholder="微信号 / 抖音号" maxlength="50">
-        <button class="wechat-submit" id="wechat-submit">提交</button>
-      </div>
-      <div class="wechat-msg" id="wechat-msg"></div>
-    `;
-  }
+  resetLoadingProgress();
   switchPage('page-form');
 });
 
@@ -2024,13 +2164,13 @@ function generateShareCard() {
   ctx.beginPath(); ctx.moveTo(120, footerY); ctx.lineTo(W-120, footerY); ctx.stroke();
 
   // 11. 编号
-  ctx.font = '600 22px "Cormorant Garamond", "Courier New", monospace';
+  ctx.font = '600 20px "PingFang SC", "Cormorant Garamond", sans-serif';
   ctx.fillStyle = '#c9a36b';
   ctx.textAlign = 'center';
   ctx.fillText(r._uid || '', W/2, footerY + 50);
 
-  // 12. CURATED BY 小登哥(测量后整体居中)
-  const curatedLabel = 'CURATED  BY';
+  // 12. CREATED BY 小登哥(测量后整体居中)
+  const curatedLabel = 'CREATED BY';
   const xdName = '小登哥 · XIAODENG';
 
   ctx.font = '500 20px "Cormorant Garamond", serif';
@@ -2052,96 +2192,15 @@ function generateShareCard() {
   ctx.fillStyle = '#c9a36b';
   ctx.fillText(xdName, byStart + curW + gap, byY);
 
-  // 13. 引流卡片
-  const callY = footerY + 145;
-  ctx.fillStyle = 'rgba(255,255,255,0.85)';
-  roundRect(ctx, 80, callY, W - 160, 100, 16);
-  ctx.fill();
-
+  // 13. 尾部署名与引导
+  const callY = footerY + 175;
   ctx.textAlign = 'center';
-  ctx.font = '500 22px "PingFang SC", sans-serif';
-  ctx.fillStyle = '#6b4f60';
-  ctx.fillText('想看完整版报告 ?', W/2, callY + 38);
-
   ctx.font = '700 26px "PingFang SC", sans-serif';
   ctx.fillStyle = '#ff8b7a';
-  ctx.fillText('抖音搜索:小登哥 ♐♏', W/2, callY + 78);
+  ctx.fillText('抖音搜索:小登哥 ♐♏', W/2, callY);
 
   return canvas;
 }
-
-// ============ 微信号提交(用事件委托,支持重置后仍能工作) ============
-async function submitWechat() {
-  const input = document.getElementById('wechat-input');
-  const msg = document.getElementById('wechat-msg');
-  const btn = document.getElementById('wechat-submit');
-  if (!input || !msg || !btn) return;
-
-  const wechatId = input.value.trim();
-  msg.className = 'wechat-msg';
-  msg.textContent = '';
-
-  if (!wechatId) {
-    msg.className = 'wechat-msg error';
-    msg.textContent = '请填写微信号或抖音号';
-    return;
-  }
-  if (wechatId.length < 3) {
-    msg.className = 'wechat-msg error';
-    msg.textContent = '微信号至少 3 位';
-    return;
-  }
-  if (!currentReport || !currentReport._uid) {
-    msg.className = 'wechat-msg error';
-    msg.textContent = '报告未生成,请先生成报告';
-    return;
-  }
-
-  btn.textContent = '提交中…';
-  btn.disabled = true;
-
-  try {
-    const resp = await fetch(`${API_BASE}/api/wechat`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        reportUid: currentReport._uid,
-        wechatId: wechatId
-      })
-    });
-    const data = await resp.json().catch(() => ({}));
-
-    if (resp.ok) {
-      const prompt = document.getElementById('wechat-prompt');
-      prompt.classList.add('done');
-      prompt.innerHTML = `
-        <div class="wechat-prompt-icon">✅</div>
-        <div class="wechat-prompt-title">收到啦,小登哥会看到 💕</div>
-        <div class="wechat-prompt-sub">
-          一周内我会给你回复<br/>
-          <span style="font-size:11px;opacity:0.7;">也可以直接在抖音搜索「小登哥」找到我</span>
-        </div>
-      `;
-    } else {
-      msg.className = 'wechat-msg error';
-      msg.textContent = data.message || '提交失败,请稍后再试';
-      btn.textContent = '提交';
-      btn.disabled = false;
-    }
-  } catch (e) {
-    msg.className = 'wechat-msg error';
-    msg.textContent = '网络错误,请重试';
-    btn.textContent = '提交';
-    btn.disabled = false;
-  }
-}
-
-// 用 document 委托,无论 DOM 怎么重置都生效
-document.addEventListener('click', (e) => {
-  if (e.target && e.target.id === 'wechat-submit') {
-    submitWechat();
-  }
-});
 
 $('share-btn').addEventListener('click', async () => {
   if (!currentReport) return;
@@ -2441,7 +2500,7 @@ function generatePdfPages() {
   page.ctx.fillText('愿你被爱,也勇敢去爱 💕', PAGE_W / 2, cursorY);
 
   cursorY += 80;
-  const curLbl = 'CURATED  BY';
+  const curLbl = 'CREATED BY';
   const xdNm = '小登哥 · XIAODENG';
 
   page.ctx.font = '500 20px "Cormorant Garamond", serif';
