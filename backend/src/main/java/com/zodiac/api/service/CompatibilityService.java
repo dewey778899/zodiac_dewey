@@ -79,37 +79,53 @@ public class CompatibilityService {
 
     private String buildFreeSystemPrompt() {
         return """
-                你是「小登哥」，一位专业的星座占星师。请为以下两位用户生成一份中文星座合盘报告。
+                你是「小登哥」，一位拥有十年一对一咨询经验的资深私人占星师。请根据以下两位用户的星座数据生成一份深度合盘报告。
 
                 【输出要求】
-                1. 只输出 JSON，不要代码块，不要解释，不要额外前后缀。
-                2. JSON 必须合法，所有字符串必须正确转义，字段之间必须有英文逗号。
-                3. 所有 chapter.content 都必须是普通字符串，不要嵌套对象，不要列表标记。
-                4. 不要在 JSON 末尾补任何总结或署名说明，署名只允许出现在最后一章正文里。
-                5. 总字数控制在 2000-3000 字。
+                1. 只输出合法 JSON，不要代码块、不要解释、不要额外文字。
+                2. 所有字符串值内不要包含未转义的换行符或引号。
+                3. 每个 chapter.content 必须是纯文本段落，不要嵌套对象或列表。
+                4. 不要在 JSON 末尾追加总结或署名说明（署名只能出现在最后一章正文内）。
+                5. 总字数 5000-8000 字，每章不少于 500 字。
+                6. 全文使用第二人称"你"叙述，营造一对一咨询的专属感。
 
-                【报告结构 - 6章】
+                【JSON 结构（8 章）】
                 {
-                  "score": 60-95 的整数（由系统计算，你只需在范围内填写）,
-                  "relationshipType": "4到8个字的关系类型",
-                  "tagline": "一句话总结，不超过30字",
+                  "relationshipType": "4-8 字的关系类型标签",
+                  "tagline": "一句话总结，不超过 30 字",
                   "chapters": [
-                    {"title": "你们的星座基因", "emoji": "✨", "content": "分析两人的太阳、月亮、上升星座，解释各自的性格底色..." },
-                    {"title": "你们在一起的化学反应", "emoji": "💞", "content": "两人相处时的吸引点和火花..." },
-                    {"title": "你们最容易出问题的地方", "emoji": "⚠️", "content": "潜在的矛盾和摩擦点..." },
-                    {"title": "相处指南", "emoji": "🧭", "content": "具体的相处建议..." },
-                    {"title": "未来三个月预演", "emoji": "🔮", "content": "未来三个月的感情走向..." },
-                    {"title": "写给你的悄悄话", "emoji": "🌙", "content": "温柔的总结和鼓励，结尾署名：—— 小登哥 ✨" }
+                    {"title": "...", "emoji": "...", "content": "..."},
+                    ...共 8 章
                   ],
-                  "essence": [
-                    "6句可收藏的建议，每句不超过30字"
-                  ]
+                  "essence": ["...", 共 6 条]
                 }
 
+                8 章主题：
+                第1章 - 你们的星座基因（深度分析太阳、月亮、上升星座在亲密关系中的具体表现，用第二人称，要有画面感和具体场景）
+                第2章 - 你们在一起的化学反应（具体场景：让TA沉沦的特质、让你心动的瞬间、外人眼里的你们。使用具体对话）
+                第3章 - 你们最容易出问题的地方（3-4个矛盾，每个按「场景还原 → 你期待什么 → TA实际做了什么 → 结果 → 星座解读」五段式）
+                第4章 - 相处指南（6-8条建议，每条包含：具体场景 + 你可以这样说（给出原话）+ 为什么有效）
+                第5章 - 未来三个月运势预演（逐月描述，具体到星座能量变化和关键事件）
+                第6章 - 前世缘分：你们是否曾相识（故事化描写，营造似曾相识感，从灵魂占星角度解读）
+                第7章 - 复合指南：如果分开了怎么办（基于星座特质的挽回策略和最佳时机）
+                第8章 - 写给你的悄悄话（300字走心总结，结尾自然引导分享或保存，署名：—— 小登哥 ✨）
+
+                essence 写成格言体，不要用祈使句，每条 15 字以内。
+
                 【写作风格】
-                - 温暖、有洞察，像朋友聊天
-                - 适当使用emoji增加亲和力
-                - 避免过于学术化的占星术语
+                - 全文第二人称"你"，像真人一对一咨询
+                - 有温度、有细节、有画面感，使用具体对话和场景
+                - 适当制造"被看穿"的惊喜感
+                - 在关键处埋情感钩子，让用户想分享或保存
+                - 避免模板化，每个星座组合的描述要有独特性
+
+                【禁止事项】
+                - 不要输出 score 字段（分数由系统计算）
+                - 不要用"你们就像..."、"你们仿佛..."开头
+                - 不要使用"值得注意的是"、"需要指出的是"、"不可否认"等翻译腔
+                - 不要在同一章内重复强调同一观点
+                - 不要用"需要多沟通"这类空泛建议替代具体场景和话术
+                - essence 不要写成"建议你XX"的祈使句
                 """;
     }
 
@@ -168,10 +184,9 @@ public class CompatibilityService {
 
         StringBuilder sb = new StringBuilder();
         sb.append("请为以下两位用户生成合盘报告。\n\n");
-        sb.append("【系统已计算的合盘数据】\n");
-        sb.append("合盘分数: ").append(calculatedScore).append("分\n");
-        sb.append("关系类型: ").append(relationshipType).append("\n");
-        sb.append("请在报告中使用以上分数和关系类型，不要自行编造。\n\n");
+        sb.append("【系统参考数据】\n");
+                sb.append("关系类型: ").append(relationshipType).append("（仅供参考）\n");
+        sb.append("\n");
 
         sb.append("【用户A / 报告主角】\n");
         sb.append("姓名: ").append(a.getName()).append("\n");
@@ -186,10 +201,7 @@ public class CompatibilityService {
         sb.append("太阳: ").append(triA.sun()).append("\n");
         sb.append("月亮: ").append(triA.moon()).append("\n");
         sb.append("上升: ").append(triA.rising()).append("\n");
-        if (isPremium) {
-            sb.append("金星: ").append(triA.sun()).append("（基于太阳星座推算爱情观）").append("\n");
-            sb.append("火星: ").append(triA.moon()).append("（基于月亮星座推算行动力）").append("\n");
-        }
+
         sb.append("\n");
 
         sb.append("【用户B / TA】\n");
@@ -205,23 +217,10 @@ public class CompatibilityService {
         sb.append("太阳: ").append(triB.sun()).append("\n");
         sb.append("月亮: ").append(triB.moon()).append("\n");
         sb.append("上升: ").append(triB.rising()).append("\n");
-        if (isPremium) {
-            sb.append("金星: ").append(triB.sun()).append("（基于太阳星座推算爱情观）").append("\n");
-            sb.append("火星: ").append(triB.moon()).append("（基于月亮星座推算行动力）").append("\n");
-        }
+
         sb.append("\n");
 
-        if (isPremium) {
-            sb.append("【付费版特别要求 - 必须遵守】\n");
-            sb.append("1. 全文必须使用第二人称'你'来叙述，营造一对一咨询的专属感\n");
-            sb.append("2. '你们最容易出问题的地方'章节：每个矛盾必须按'场景还原→你的期待→TA的实际反应→结果→真相'五段式写\n");
-            sb.append("3. '相处指南'章节：每条建议必须包含具体场景+你可以这样说（exact话术）+为什么有效（星座依据）\n");
-            sb.append("4. 分析金星（爱情观）和火星（行动力/性吸引力）的互动\n");
-            sb.append("5. 在'复合指南'章节中，给出基于星座特质的具体挽回策略\n");
-            sb.append("6. 在最后一章'写给你的悄悄话'中，用知心朋友的口吻写300字情感总结，自然引导用户转发/保存报告\n");
-            sb.append("7. essence珍藏锦囊必须是6条，每条15字以内，格式如：'当他专注其他事时，直接说'我需要你抱抱我''\n");
-            sb.append("8. 营造'小登哥一对一为你解读'的专属感，让用户觉得'这说的就是我'\n\n");
-        }
+
 
         sb.append("请用温柔、有洞察的中文写作，但最终只返回合法 JSON。");
         return sb.toString();
@@ -360,7 +359,8 @@ public class CompatibilityService {
                                                                       ZodiacCalculator.ZodiacTriplet triB,
                                                                       boolean isPremium) {
         List<CompatibilityResponse.Chapter> result = new ArrayList<>(chapters);
-        List<CompatibilityResponse.Chapter> fallback = fallbackChapters(request, triA, triB, isPremium);
+        int fbScore = scoringService.calculateScore(request, triA, triB);
+        List<CompatibilityResponse.Chapter> fallback = fallbackChapters(request, triA, triB, isPremium, fbScore);
         int minChapters = isPremium ? PREMIUM_MIN_CHAPTERS : MIN_CHAPTERS;
 
         // 使用个性化标题替换 AI 返回的标题
@@ -410,7 +410,7 @@ public class CompatibilityService {
                 .score(score)
                 .relationshipType(scoringService.inferRelationshipType(score, triA.sun(), triB.sun()))
                 .tagline(request.getPersonA().getName() + "和" + request.getPersonB().getName() + "之间有真实吸引，也需要更温柔的表达。")
-                .chapters(fallbackChapters(request, triA, triB, isPremium))
+                .chapters(fallbackChapters(request, triA, triB, isPremium, score))
                 .essence(fallbackEssence(request, triA, triB, isPremium))
                 .reportUid(generateReportUid(triA.sun(), triB.sun()))
                 .zodiacA(toZodiacInfo(triA))
@@ -421,7 +421,8 @@ public class CompatibilityService {
     private List<CompatibilityResponse.Chapter> fallbackChapters(CompatibilityRequest request,
                                                                  ZodiacCalculator.ZodiacTriplet triA,
                                                                  ZodiacCalculator.ZodiacTriplet triB,
-                                                                 boolean isPremium) {
+                                                                 boolean isPremium,
+                                                                 int calculatedScore) {
         String nameA = request.getPersonA().getName();
         String nameB = request.getPersonB().getName();
 
@@ -431,11 +432,19 @@ public class CompatibilityService {
             nameA + "的太阳" + triA.sun() + "让TA在关系里更重视稳定和投入，月亮" + triA.moon() + "让情绪表达带着主观热度，上升" + triA.rising() + "又会把很多担心藏进细节里。"
                     + nameB + "这边的太阳" + triB.sun() + "更在意被看见的感觉，月亮" + triB.moon() + "决定了内心真正的安全需求，上升" + triB.rising() + "则影响TA在关系里的第一反应。你们不是没有默契，而是默契常常被表达方式拖慢。"));
         chapters.add(chapter(
-            scoringService.generateChapterTitle(1, triA.sun(), triB.sun(), isPremium), "💞",
-            nameA + "容易被" + nameB + "身上更鲜明、更直接的情绪吸引，" + nameB + "也会被" + nameA + "带来的稳定感安抚。好的时候，这段关系很容易形成一个人点火、一个人续航的组合。问题在于，一旦其中一方退回自己的舒适区，另一方就会误读成冷淡或不在乎。"));
+            scoringService.generateChapterTitle(1, triA.sun(), triB.sun(), isPremium), "❤️",
+            calculatedScore >= 82
+                ? nameA + "和" + nameB + "之间有一种近乎本能的吸引力——你们不需要刻意找话题，沉默时也不会尴尬。" + nameA + "身上的某种特质让" + nameB + "觉得“这就是对的人”，而" + nameB + "的一个眼神就能让" + nameA + "心软。这种默契在外人看来几乎是刻意的，但你们知道那是真的。"
+                : calculatedScore >= 72
+                    ? nameA + "容易被" + nameB + "身上更鲜明、更直接的情绪吸引，" + nameB + "也会被" + nameA + "带来的稳定感安抚。好的时候，你们很容易形成一个人点火、一个人续航的组合。问题在于，一旦其中一方退回自己的舒适区，另一方就会误读成冷淡或不在乎。"
+                    : nameA + "和" + nameB + "的吸引更多来自反差感——" + nameA + "身上有" + nameB + "缺少的特质，反之亦然。有时候觉得特别般配，有时候又觉得完全不在一个频道。关键在于愿不愿意理解彼此的逻辑，而不是只享受表面的化学反应。"));
         chapters.add(chapter(
             scoringService.generateChapterTitle(2, triA.sun(), triB.sun(), isPremium), "⚠️",
-            "你们最大的摩擦往往不是爱得不够，而是节奏不一致。一个人希望马上回应，另一个人习惯先消化再表达；一个人想确认关系，另一个人先去处理现实细节。矛盾累积后，就会从具体事情升级成“你是不是根本不懂我”。这类关系最怕把情绪拖成沉默。"));
+            calculatedScore >= 82
+                ? "你们的摩擦更多来自期望差——不是不爱，而是各自表达爱的方式不同。" + nameA + "觉得“我做得够多了”，" + nameB + "却觉得“你根本没走心”。这种误解如果不及时说开，会慢慢变成积怨。好消息是，你们的感情基础够厚，只要愿意坐下来认真谈一次，大多数问题都能解决。"
+                : calculatedScore >= 72
+                    ? "你们最大的摩擦往往不是爱得不够，而是节奏不一致。一个人希望马上回应，另一个人习惯先消化再表达；一个人想确认关系，另一个人先去处理现实细节。矛盾累积后，就会从具体事情升级成“你是不是根本不懂我”。这类关系最怕把情绪拖成沉默。"
+                    : nameA + "和" + nameB + "的核心矛盾来自价值观差异。你们对“什么是好的关系”有着不同的定义——一个要的是陪伴和回应，另一个要的是空间和独立。这不是谁对谁错，但如果一直用各自的标准去衡量对方，失望只会越攜越多。"));
         chapters.add(chapter(
             scoringService.generateChapterTitle(3, triA.sun(), triB.sun(), isPremium), "🧭",
             "先约定一个固定的沟通动作，比方说遇到分歧时先说明情绪、再说诉求、最后给出具体请求。对" + nameA + "来说，少一点闷着做事、多一点把想法说出来；对" + nameB + "来说，少一点试探式表达、多一点直接说明自己要什么。你们需要的不是更激烈，而是更清楚。"));
@@ -444,7 +453,11 @@ public class CompatibilityService {
             "接下来三个月，这段关系适合处理现实安排、边界感和期待值。只要把容易误解的事情说清楚，关系会稳得更快；如果继续靠猜，前期的小别扭很容易放大。建议把重要话题放到情绪平稳的时候谈，不要在最上头的时候决定关系走向。"));
         chapters.add(chapter(
             scoringService.generateChapterTitle(5, triA.sun(), triB.sun(), isPremium), "🌙",
-            nameA + "，你们之间不是没有缘分，而是这段缘分更考验耐心和表达。真正重要的，不是谁更会爱，而是谁愿意在误解出现时往前走一步。你把心事说出来，TA才有机会真正靠近你。\n\n—— 小登哥 ✨"));
+            calculatedScore >= 82
+                ? nameA + "，你们之间的缘分比你自己以为的要深得多。这段关系之所以让你犹豫，恰恰说明你很在意。" + nameB + "需要的不是完美的你，而是真实的你。下次见面时，试着放下那些顾虑，好好看看" + nameB + "的眼睛——你会发现答案一直在那里。\n\n—— 小登哥 ✨"
+                : calculatedScore >= 72
+                    ? nameA + "，你们之间不是没有缘分，而是这段缘分更考验耐心和表达。真正重要的，不是谁更会爱，而是谁愿意在误解出现时往前走一步。你把心事说出来，TA才有机会真正靠近你。\n\n—— 小登哥 ✨"
+                    : nameA + "，你和" + nameB + "的关系需要更多耐心。你们不是不合适，而是还在找彼此的节奏。不要因为一时的摩擦就否定整段感情——真正值得的关系，从来都不是一帆风顺的。\n\n—— 小登哥 ✨"));
 
         if (isPremium) {
             chapters.add(chapter(

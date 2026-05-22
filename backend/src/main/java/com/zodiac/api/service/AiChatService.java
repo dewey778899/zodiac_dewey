@@ -37,6 +37,9 @@ public class AiChatService {
     @Value("${ai.api.max-tokens:8000}")
     private Integer maxTokens;
 
+    @Value("${ai.api.temperature:0.7}")
+    private Double temperature;
+
     @Value("${ai.api.timeout-seconds:180}")
     private Integer timeoutSeconds;
 
@@ -51,6 +54,9 @@ public class AiChatService {
 
     @Value("${ai.api.claude.max-tokens:8000}")
     private Integer claudeMaxTokens;
+
+    @Value("${ai.api.claude.temperature:0.8}")
+    private Double claudeTemperature;
 
     @Value("${ai.api.claude.timeout-seconds:180}")
     private Integer claudeTimeoutSeconds;
@@ -100,6 +106,7 @@ public class AiChatService {
         return Map.of(
                 "model", model,
                 "max_tokens", maxTokens,
+                "temperature", temperature,
                 "response_format", Map.of("type", "json_object"),
                 "messages", List.of(
                         Map.of("role", "system", "content", systemPrompt),
@@ -166,6 +173,7 @@ public class AiChatService {
         return Map.of(
                 "model", claudeModel,
                 "max_tokens", claudeMaxTokens,
+                "temperature", claudeTemperature,
                 "system", systemPrompt,
                 "messages", List.of(
                         Map.of("role", "user", "content", userPrompt)
