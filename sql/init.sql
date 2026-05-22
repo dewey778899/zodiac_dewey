@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS soulmate_report (
 
   -- 报告结果
   score INT COMMENT '匹配度 0-100',
+  model_code VARCHAR(20) COMMENT '模型代码 deepseek/claude',
   relationship_type VARCHAR(50) COMMENT '关系类型',
   tagline VARCHAR(500) COMMENT '一句话总结',
   full_report LONGTEXT COMMENT 'Claude 原始 JSON',
@@ -56,7 +57,25 @@ CREATE TABLE IF NOT EXISTS soulmate_report (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   COMMENT='灵魂合盘报告记录';
 
--- 3. 常用查询示例(供小登哥后台用)
+-- 3. 统计事件表
+CREATE TABLE IF NOT EXISTS analytics_event (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  event_type VARCHAR(50) NOT NULL COMMENT '事件类型',
+  model_code VARCHAR(20) NULL COMMENT '模型代码 deepseek/claude',
+  channel VARCHAR(20) NULL COMMENT '二维码渠道 wechat/alipay',
+  report_uid VARCHAR(50) NULL COMMENT '关联报告编号',
+  ip_address VARCHAR(50) NULL,
+  user_agent VARCHAR(500) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  INDEX idx_event_created_at (created_at),
+  INDEX idx_event_type (event_type),
+  INDEX idx_event_model (model_code),
+  INDEX idx_event_channel (channel)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='运营统计事件';
+
+-- 4. 常用查询示例(供小登哥后台用)
 
 -- 今日生成报告数
 -- SELECT COUNT(*) FROM soulmate_report WHERE DATE(created_at) = CURDATE();

@@ -25,6 +25,14 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(AdminAuthException.class)
+    public ResponseEntity<?> adminAuth(AdminAuthException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "error", "admin_unauthorized",
+                "message", e.getMessage()
+        ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> generic(Exception e) {
         log.error("未处理异常", e);

@@ -58,6 +58,8 @@ public class SoulmateReport {
 
     @Column(name = "score")
     private Integer score;
+    @Column(name = "model_code", length = 20)
+    private String modelCode;
     @Column(name = "relationship_type", length = 50)
     private String relationshipType;
     @Column(name = "tagline", length = 500)

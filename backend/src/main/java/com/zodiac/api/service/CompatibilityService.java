@@ -457,6 +457,7 @@ public class CompatibilityService {
         e.setRisingB(triB.rising());
 
         e.setScore(resp.getScore());
+        e.setModelCode(normalizeModelCode(req.getModel()));
         e.setRelationshipType(resp.getRelationshipType());
         e.setTagline(resp.getTagline());
         e.setFullReport(rawJson);
@@ -466,5 +467,9 @@ public class CompatibilityService {
                 ? userAgent.substring(0, 500) : userAgent);
         e.setSharedCount(0);
         return e;
+    }
+
+    private String normalizeModelCode(String modelCode) {
+        return "claude".equalsIgnoreCase(modelCode) ? "claude" : "deepseek";
     }
 }

@@ -4,6 +4,7 @@ import com.zodiac.api.dto.CompatibilityRequest;
 import com.zodiac.api.dto.CompatibilityResponse;
 import com.zodiac.api.dto.WechatUpdateRequest;
 import com.zodiac.api.repository.SoulmateReportRepository;
+import com.zodiac.api.service.AnalyticsService;
 import com.zodiac.api.service.CompatibilityService;
 import com.zodiac.api.service.RateLimitService;
 import com.zodiac.api.util.IpUtil;
@@ -25,6 +26,7 @@ public class CompatibilityController {
     private final CompatibilityService compatibilityService;
     private final RateLimitService rateLimitService;
     private final SoulmateReportRepository repository;
+    private final AnalyticsService analyticsService;
 
     @GetMapping("/health")
     public Map<String, Object> health() {
@@ -54,6 +56,7 @@ public class CompatibilityController {
         // 2. 生成报告
         try {
             CompatibilityResponse resp = compatibilityService.generateReport(request, ip, ua);
+            analyticsService.recordGenerateSuccess(request.getModel(), resp.getReportUid(), ip, ua);
             return ResponseEntity.ok(resp);
         } catch (Exception e) {
             log.error("生成报告失败,回滚限流计数", e);

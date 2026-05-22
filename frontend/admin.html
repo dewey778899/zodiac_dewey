@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小登哥后台</title>
+<style>
+  :root {
+    --bg: #fff8f4;
+    --paper: #ffffff;
+    --ink: #34242d;
+    --muted: #7d6876;
+    --line: #f0dde7;
+    --peach: #ff8b7a;
+    --peach-soft: #fff1eb;
+    --violet: #8b72bc;
+    --violet-soft: #f4effc;
+    --gold: #c9a36b;
+    --shadow: 0 18px 50px rgba(122, 80, 120, 0.12);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", "Noto Serif SC", sans-serif;
+    background:
+      radial-gradient(circle at top right, rgba(255,181,167,0.22), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(139,114,188,0.16), transparent 24%),
+      linear-gradient(180deg, #fffaf7, #fff5fa);
+    color: var(--ink);
+  }
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+  }
+  .hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .hero-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0 0 8px;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0;
+  }
+  .top-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .chip {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .btn {
+    border: none;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--peach), var(--violet));
+    color: white;
+    box-shadow: 0 10px 25px rgba(139,114,188,0.22);
+  }
+  .btn.secondary {
+    background: white;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .login-wrap {
+    max-width: 420px;
+    margin: 80px auto 0;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+  }
+  .login-wrap h2 {
+    margin: 0 0 8px;
+    font-size: 24px;
+  }
+  .login-wrap p {
+    margin: 0 0 18px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 14px;
+  }
+  .field {
+    margin-bottom: 14px;
+  }
+  .field label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .error {
+    margin-top: 12px;
+    color: #c44;
+    font-size: 13px;
+    min-height: 20px;
+  }
+  .hidden { display: none !important; }
+  .dashboard {
+    display: grid;
+    gap: 18px;
+  }
+  .card {
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .section-title {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .section-sub {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .metric-box {
+    border-radius: 18px;
+    padding: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,247,251,0.94));
+    border: 1px solid var(--line);
+  }
+  .metric-box.peach { background: linear-gradient(180deg, #fff7f2, #fff1eb); }
+  .metric-box.violet { background: linear-gradient(180deg, #faf7ff, #f4effc); }
+  .metric-box.gold { background: linear-gradient(180deg, #fffaf2, #fff6e8); }
+  .metric-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .metric-value {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .metric-split {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .trend-table, .report-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .trend-table th, .trend-table td,
+  .report-table th, .report-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .trend-table th, .report-table th {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .pill.deepseek {
+    background: var(--peach-soft);
+    color: var(--peach);
+  }
+  .pill.claude {
+    background: var(--violet-soft);
+    color: var(--violet);
+  }
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .filters input {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .pager {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .pager-info {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (max-width: 900px) {
+    .metric-grid { grid-template-columns: 1fr; }
+    .hero {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .top-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div id="login-view" class="login-wrap">
+      <h2>小登哥后台</h2>
+      <p>先用单管理员账号密码登录。第一版可以查看模型点击/成功数据、二维码展示/切换数据和报告记录。</p>
+      <div class="field">
+        <label for="admin-username">管理员账号</label>
+        <input id="admin-username" autocomplete="username" placeholder="请输入账号">
+      </div>
+      <div class="field">
+        <label for="admin-password">管理员密码</label>
+        <input id="admin-password" type="password" autocomplete="current-password" placeholder="请输入密码">
+      </div>
+      <button class="btn primary" id="login-btn">登录后台</button>
+      <div class="error" id="login-error"></div>
+    </div>
+
+    <div id="dashboard-view" class="hidden">
+      <div class="hero">
+        <div>
+          <h1 class="hero-title">小登哥运营后台</h1>
+          <p class="hero-sub">查看二维码展示 / 切换统计、模型点击 / 成功统计，以及最新报告记录。</p>
+        </div>
+        <div class="top-actions">
+          <div class="chip" id="login-status">已登录</div>
+          <button class="btn secondary" id="refresh-btn">刷新数据</button>
+          <button class="btn secondary" id="logout-btn">退出登录</button>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <div class="card">
+          <h2 class="section-title">核心指标</h2>
+          <p class="section-sub">今天 vs 累计，一眼看到模型使用和支付二维码触达情况。</p>
+          <div class="metric-grid" id="metric-grid"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">最近 7 天趋势</h2>
+          <p class="section-sub">重点关注 DeepSeek / 深度解析点击与成功，以及二维码展示热度。</p>
+          <table class="trend-table">
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>DeepSeek 点击</th>
+                <th>深度解析 点击</th>
+                <th>DeepSeek 成功</th>
+                <th>深度解析 成功</th>
+                <th>支付弹窗</th>
+                <th>微信展示</th>
+                <th>支付宝展示</th>
+              </tr>
+            </thead>
+            <tbody id="trend-body"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">报告记录</h2>
+          <p class="section-sub">支持按报告编号、双方昵称、模型搜索，方便回查具体生成记录。</p>
+          <div class="filters">
+            <input id="report-query" placeholder="搜索报告编号 / 昵称 / 模型">
+            <button class="btn primary" id="search-btn">搜索</button>
+          </div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>报告编号</th>
+                <th>双方昵称</th>
+                <th>模型</th>
+                <th>分数</th>
+                <th>关系类型</th>
+                <th>微信号</th>
+                <th>生成时间</th>
+              </tr>
+            </thead>
+            <tbody id="report-body"></tbody>
+          </table>
+          <div class="empty hidden" id="report-empty">暂时还没有匹配的数据。</div>
+          <div class="pager">
+            <div class="pager-info" id="pager-info"></div>
+            <div>
+              <button class="btn secondary" id="prev-page">上一页</button>
+              <button class="btn secondary" id="next-page">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const API_BASE = (() => {
+  if (!location.port || location.port === '80' || location.port === '443') return '';
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    return location.port === '8080' ? '' : 'http://localhost:8080';
+  }
+  if (location.hostname.startsWith('10.') || location.hostname.startsWith('192.168.') || location.hostname.startsWith('172.')) {
+    return 'http://' + location.hostname + ':8080';
+  }
+  return '';
+})();
+
+const ADMIN_TOKEN_KEY = 'zodiac_admin_token';
+let adminToken = localStorage.getItem(ADMIN_TOKEN_KEY) || '';
+let currentPage = 0;
+let currentQuery = '';
+let totalPages = 0;
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function setView(loggedIn) {
+  $('login-view').classList.toggle('hidden', loggedIn);
+  $('dashboard-view').classList.toggle('hidden', !loggedIn);
+}
+
+async function api(path, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  if (adminToken) {
+    headers['X-Admin-Token'] = adminToken;
+  }
+  const resp = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const err = new Error(data.message || `请求失败 (${resp.status})`);
+    err.status = resp.status;
+    throw err;
+  }
+  return data;
+}
+
+function renderMetrics(overview) {
+  const cards = [
+    {
+      title: '生成点击',
+      className: 'peach',
+      value: overview.generateClick.today,
+      total: overview.generateClick.total,
+      left: `DeepSeek ${overview.generateClick.deepseekToday} / ${overview.generateClick.deepseekTotal}`,
+      right: `深度解析 ${overview.generateClick.claudeToday} / ${overview.generateClick.claudeTotal}`
+    },
+    {
+      title: '生成成功',
+      className: 'violet',
+      value: overview.generateSuccess.today,
+      total: overview.generateSuccess.total,
+      left: `DeepSeek ${overview.generateSuccess.deepseekToday} / ${overview.generateSuccess.deepseekTotal}`,
+      right: `深度解析 ${overview.generateSuccess.claudeToday} / ${overview.generateSuccess.claudeTotal}`
+    },
+    {
+      title: '支付弹窗打开',
+      className: 'gold',
+      value: overview.qrModalOpen.today,
+      total: overview.qrModalOpen.total,
+      left: `今日 ${overview.qrModalOpen.today}`,
+      right: `累计 ${overview.qrModalOpen.total}`
+    },
+    {
+      title: '二维码展示',
+      className: 'peach',
+      value: overview.qrView.today,
+      total: overview.qrView.total,
+      left: `微信 ${overview.qrView.wechatToday} / ${overview.qrView.wechatTotal}`,
+      right: `支付宝 ${overview.qrView.alipayToday} / ${overview.qrView.alipayTotal}`
+    },
+    {
+      title: '二维码切换',
+      className: 'violet',
+      value: overview.qrSwitch.today,
+      total: overview.qrSwitch.total,
+      left: `微信 ${overview.qrSwitch.wechatToday} / ${overview.qrSwitch.wechatTotal}`,
+      right: `支付宝 ${overview.qrSwitch.alipayToday} / ${overview.qrSwitch.alipayTotal}`
+    }
+  ];
+
+  $('metric-grid').innerHTML = cards.map(card => `
+    <div class="metric-box ${card.className}">
+      <div class="metric-label">${card.title}</div>
+      <div class="metric-value">${card.value}</div>
+      <div class="metric-split">
+        <span>${card.left}</span>
+        <span>${card.right}</span>
+      </div>
+      <div class="metric-split" style="margin-top:10px;">
+        <span>累计</span>
+        <strong>${card.total}</strong>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTrends(overview) {
+  $('trend-body').innerHTML = overview.trends.map(item => `
+    <tr>
+      <td>${item.date}</td>
+      <td>${item.deepseekClicks}</td>
+      <td>${item.claudeClicks}</td>
+      <td>${item.deepseekSuccess}</td>
+      <td>${item.claudeSuccess}</td>
+      <td>${item.qrModalOpens}</td>
+      <td>${item.wechatViews}</td>
+      <td>${item.alipayViews}</td>
+    </tr>
+  `).join('');
+}
+
+function modelPill(model) {
+  const text = model === 'claude' ? '深度解析' : 'DeepSeek';
+  const className = model === 'claude' ? 'claude' : 'deepseek';
+  return `<span class="pill ${className}">${text}</span>`;
+}
+
+function renderReports(result) {
+  totalPages = result.totalPages;
+  $('pager-info').textContent = `第 ${result.page + 1} / ${Math.max(result.totalPages, 1)} 页，共 ${result.totalElements} 条`;
+
+  if (!result.items || result.items.length === 0) {
+    $('report-body').innerHTML = '';
+    $('report-empty').classList.remove('hidden');
+    return;
+  }
+
+  $('report-empty').classList.add('hidden');
+  $('report-body').innerHTML = result.items.map(item => `
+    <tr>
+      <td>${item.reportUid || ''}</td>
+      <td>${item.userAName || '-'} × ${item.userBName || '-'}</td>
+      <td>${modelPill(item.modelCode)}</td>
+      <td>${item.score ?? '-'}</td>
+      <td>${item.relationshipType || '-'}</td>
+      <td>${item.wechatId || '-'}</td>
+      <td>${item.createdAt || '-'}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadOverview() {
+  const overview = await api('/api/admin/overview');
+  renderMetrics(overview);
+  renderTrends(overview);
+}
+
+async function loadReports() {
+  const result = await api(`/api/admin/reports?page=${currentPage}&size=20&query=${encodeURIComponent(currentQuery)}`);
+  renderReports(result);
+}
+
+async function login() {
+  $('login-error').textContent = '';
+  const username = $('admin-username').value.trim();
+  const password = $('admin-password').value;
+  try {
+    const data = await api('/api/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: {}
+    });
+    adminToken = data.token;
+    localStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
+    $('login-status').textContent = `登录有效期到 ${data.expiresAt.replace('T', ' ').slice(0, 16)}`;
+    setView(true);
+    await Promise.all([loadOverview(), loadReports()]);
+  } catch (e) {
+    $('login-error').textContent = e.message;
+  }
+}
+
+function logout() {
+  adminToken = '';
+  localStorage.removeItem(ADMIN_TOKEN_KEY);
+  setView(false);
+}
+
+async function boot() {
+  if (!adminToken) {
+    setView(false);
+    return;
+  }
+  try {
+    setView(true);
+    await Promise.all([loadOverview(), loadReports()]);
+  } catch (e) {
+    if (e.status === 401) {
+      logout();
+      $('login-error').textContent = e.message;
+    }
+  }
+}
+
+$('login-btn').addEventListener('click', login);
+$('logout-btn').addEventListener('click', logout);
+$('refresh-btn').addEventListener('click', async () => {
+  await Promise.all([loadOverview(), loadReports()]);
+});
+$('search-btn').addEventListener('click', async () => {
+  currentPage = 0;
+  currentQuery = $('report-query').value.trim();
+  await loadReports();
+});
+$('prev-page').addEventListener('click', async () => {
+  if (currentPage <= 0) return;
+  currentPage -= 1;
+  await loadReports();
+});
+$('next-page').addEventListener('click', async () => {
+  if (currentPage >= totalPages - 1) return;
+  currentPage += 1;
+  await loadReports();
+});
+$('report-query').addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    currentPage = 0;
+    currentQuery = $('report-query').value.trim();
+    await loadReports();
+  }
+});
+
+boot();
+</script>
+</body>
+</html>
