@@ -12,13 +12,11 @@ spring:
     name: zodiac-dewey
 
   datasource:
-    url: ${DB_URL:jdbc:h2:file:./data/zodiac_dewey;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;AUTO_SERVER=TRUE}
-    username: ${DB_USER:sa}
-    password: ${DB_PASSWORD:}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: ${DB_URL:jdbc:sqlite:./data/zodiac_dewey.db}
+    driver-class-name: ${DB_DRIVER:org.sqlite.JDBC}
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 2
+      maximum-pool-size: 1
+      minimum-idle: 1
       connection-timeout: 30000
 
   jpa:
@@ -27,8 +25,10 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.community.dialect.SQLiteDialect}
         format_sql: true
+        jdbc:
+          use_get_generated_keys: ${HIBERNATE_USE_GET_GENERATED_KEYS:false}
 
   jackson:
     default-property-inclusion: non_null
@@ -65,12 +65,6 @@ admin:
   username: ${ADMIN_USERNAME:dewey}
   password: ${ADMIN_PASSWORD:dewey}
   session-hours: ${ADMIN_SESSION_HOURS:12}
-
-# ============ H2 控制台 ============
-h2:
-  console:
-    enabled: ${H2_CONSOLE_ENABLED:true}
-    path: /h2-console
 
 # ============ 日志 ============
 logging:

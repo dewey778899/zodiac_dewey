@@ -20,7 +20,7 @@ COPY --from=builder /app/target/zodiac-dewey.jar app.jar
 # Copy frontend static files
 COPY frontend/ /app/static/
 
-# Runtime data directory for H2
+# Runtime data directory for SQLite
 RUN mkdir -p /app/data
 
 EXPOSE 8080

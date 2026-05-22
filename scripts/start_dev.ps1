@@ -31,5 +31,5 @@ if (-not $env:SERVER_PORT) {
     $env:SERVER_PORT = "8080"
 }
 
-Write-Host "Starting Spring Boot backend on http://localhost:$env:SERVER_PORT" -ForegroundColor Green
+Write-Host "Starting Spring Boot backend on http://localhost:$env:SERVER_PORT (SQLite)" -ForegroundColor Green
 mvn spring-boot:run

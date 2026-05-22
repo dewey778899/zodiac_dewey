@@ -32,6 +32,9 @@ public class AdminAuthService {
             .build();
 
     public LoginResult login(String usernameInput, String passwordInput) {
+        if (username == null || username.isBlank() || password == null || password.isBlank()) {
+            throw new AdminAuthException("后台管理员账号未配置，请先设置 ADMIN_USERNAME 和 ADMIN_PASSWORD");
+        }
         if (!username.equals(usernameInput) || !password.equals(passwordInput)) {
             throw new AdminAuthException("管理员账号或密码不正确");
         }

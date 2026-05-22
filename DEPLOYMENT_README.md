@@ -1,36 +1,36 @@
 # Deployment README
 
-This project now runs with:
+This project uses SQLite everywhere:
 
-- Backend: Spring Boot 3.2 / Java 17
-- Frontend: static `frontend/index.html`
-- AI provider: DeepSeek Chat Completions API
-- Local database: H2 file database
-- Production database: MySQL recommended
+- Local: SQLite file at `backend/data/zodiac_dewey.db`
+- Docker: SQLite file at `/app/data/zodiac_dewey.db`
+- No H2
+- No MySQL
 
 ## 1. Environment
 
-Copy `.env.example` to `.env` and fill in your values.
+Copy `.env.example` to `.env` and fill in at least the AI keys you need.
 
-Required for real report generation:
+Example:
 
 ```bash
 AI_API_KEY=your_deepseek_key
 AI_API_URL=https://api.deepseek.com/chat/completions
 AI_MODEL=deepseek-chat
-```
 
-For local development, the default H2 configuration is enough.
+CLAUDE_API_KEY=your_claude_key
+CLAUDE_API_URL=https://api.anthropic.com/v1/messages
+CLAUDE_MODEL=claude-opus-4-7
 
-For production, switch to MySQL:
-
-```bash
-DB_URL=jdbc:mysql://127.0.0.1:3306/zodiac_dewey?useUnicode=true&characterEncoding=utf8mb4&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-DB_USER=zodiac
-DB_PASSWORD=strong_password
-DB_DRIVER=com.mysql.cj.jdbc.Driver
-HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
+DB_URL=jdbc:sqlite:./data/zodiac_dewey.db
+DB_DRIVER=org.sqlite.JDBC
+HIBERNATE_DIALECT=org.hibernate.community.dialect.SQLiteDialect
+HIBERNATE_USE_GET_GENERATED_KEYS=false
 JPA_DDL_AUTO=update
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=replace_with_a_strong_password
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ```
 
 ## 2. Local Start
@@ -66,46 +66,24 @@ Jar path:
 backend/target/zodiac-dewey.jar
 ```
 
-## 4. Production Run
-
-Start the jar with the `.env` variables loaded into the shell or your process manager:
+## 4. Run Backend
 
 ```bash
 java -jar backend/target/zodiac-dewey.jar
 ```
 
-## 5. Nginx
+The SQLite database file will be created automatically on first start.
 
-Serve the frontend as static files and reverse proxy `/api/` to the Spring Boot service on `127.0.0.1:8080`.
+## 5. Docker
 
-Example:
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    root /var/www/zodiac;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_read_timeout 300s;
-    }
-}
+```bash
+docker compose up -d
 ```
+
+The container stores SQLite data in the `sqlite_data` volume mounted to `/app/data`.
 
 ## 6. Notes
 
-- `.env` is ignored by git and should stay private.
-- `backend/data/` is local H2 runtime data and should not be committed.
-- Without `AI_API_KEY`, the service can start but report generation will fail.
+- `.env` should stay private and must not be committed.
+- `backend/data/` contains local SQLite runtime data and should not be committed.
+- Without API keys, the app can start but real AI report generation will fail.

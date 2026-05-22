@@ -1,102 +1,73 @@
-# 🌙 小登哥的灵魂合盘
+# Zodiac Dewey
 
-> AI 实时生成深度星座合盘报告，支持 DeepSeek（免费）+ Claude（付费）双模型。
+AI compatibility report app with:
 
-[![Docker Build](https://github.com/dewey778899/zodiac_dewey/actions/workflows/docker-build.yml/badge.svg)](https://github.com/dewey778899/zodiac_dewey/actions/workflows/docker-build.yml)
+- Frontend: static H5 page
+- Backend: Spring Boot 3.2 / Java 17
+- Models: DeepSeek and Claude Opus 4.7
+- Database: SQLite only
 
----
+## Images
 
-## 🐳 一键部署
+- Backend image: `dwaigx/zodiac-dewey-backend:latest`
+- Frontend image: `dwaigx/zodiac-dewey-frontend:latest`
 
-### 前后端双镜像
+## Quick Start
 
-| 镜像 | 地址 |
-|------|------|
-| 后端 | `dwaigx/zodiac-dewey-backend:latest` |
-| 前端 | `dwaigx/zodiac-dewey-frontend:latest` |
+1. Copy `.env.example` to `.env`
+2. Fill in your API keys
+3. Start locally or with Docker
 
-### docker-compose（推荐）
+### Local backend
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\start_dev.ps1
+```
+
+### Local frontend
 
 ```bash
-# 1. 创建配置
-cat > .env << EOF
-AI_API_KEY=你的DeepSeek密钥
-CLAUDE_API_KEY=你的Claude密钥(可选)
-CORS_ALLOWED_ORIGINS=*
-EOF
-
-# 2. 下载编排文件
-curl -O https://raw.githubusercontent.com/dewey778899/zodiac_dewey/main/docker-compose.yml
-
-# 3. 启动
-docker-compose up -d
-
-# 4. 访问
-# http://服务器IP
+cd frontend
+python -m http.server 5173
 ```
 
-### docker run
+### Docker
 
 ```bash
-# 后端
-docker run -d --name zodiac_backend --restart unless-stopped \
-  -e AI_API_KEY=你的DeepSeek密钥 \
-  -e CORS_ALLOWED_ORIGINS='*' \
-  -v zodiac_data:/app/data \
-  dwaigx/zodiac-dewey-backend:latest
-
-# 前端（Nginx，自动代理 /api/ 到后端）
-docker run -d --name zodiac_frontend --restart unless-stopped \
-  --link zodiac_backend:backend \
-  -p 80:80 \
-  dwaigx/zodiac-dewey-frontend:latest
+docker compose up -d
 ```
 
-### 升级
+## SQLite
+
+The project uses SQLite in all environments.
+
+- Local default: `backend/data/zodiac_dewey.db`
+- Docker default: `/app/data/zodiac_dewey.db`
+
+There is no H2 or MySQL runtime path in the current setup.
+
+## Key env vars
 
 ```bash
-docker-compose pull && docker-compose up -d
+AI_API_KEY=your_deepseek_key
+CLAUDE_API_KEY=your_claude_key
+CLAUDE_MODEL=claude-opus-4-7
+DB_URL=jdbc:sqlite:./data/zodiac_dewey.db
+DB_DRIVER=org.sqlite.JDBC
+HIBERNATE_DIALECT=org.hibernate.community.dialect.SQLiteDialect
+HIBERNATE_USE_GET_GENERATED_KEYS=false
+JPA_DDL_AUTO=update
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change_me
 ```
 
----
+## Health Check
 
-## 🤖 模型配置
-
-### DeepSeek（免费，默认）
-
-| 环境变量 | 说明 | 默认值 |
-|---------|------|--------|
-| `AI_API_KEY` | API Key | **必填** |
-| `AI_API_URL` | API 地址 | `https://api.deepseek.com/chat/completions` |
-| `AI_MODEL` | 模型名 | `deepseek-chat` |
-
-### Claude（付费）
-
-| 环境变量 | 说明 | 默认值 |
-|---------|------|--------|
-| `CLAUDE_API_KEY` | API Key | 可选 |
-| `CLAUDE_MODEL` | 模型名 | `claude-sonnet-4-5-20250929` |
-| `AI_PROXY_HOST` | 代理地址（国内访问 Claude 需要） | 空 |
-| `AI_PROXY_PORT` | 代理端口 | `0` |
-
----
-
-## 📂 项目结构
-
-```
-zodiac_dewey/
-├── backend/           Spring Boot 3.2 + Java 17 + H2
-│   ├── Dockerfile
-│   └── src/
-├── frontend/          纯 HTML + Canvas，Nginx 部署
-│   ├── Dockerfile
-│   └── img/           支付二维码
-├── docker-compose.yml
-└── .github/workflows/ CI 自动构建推送镜像
+```bash
+curl http://localhost:8080/api/health
 ```
 
----
+## Docs
 
-## 📜 License
-
-MIT © 2026 小登哥
+- Deployment: [DEPLOYMENT_README.md](DEPLOYMENT_README.md)
+- Production notes: [docs/DEPLOY.md](docs/DEPLOY.md)

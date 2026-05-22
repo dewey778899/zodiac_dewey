@@ -16,6 +16,12 @@ if [ ! -f .env ]; then
     echo ""
     read -p "请输入 DeepSeek API Key (必填): " input_ai_key
     read -p "请输入 Claude API Key (可选，直接回车跳过): " input_claude_key
+    read -p "请输入后台管理员密码(留空则使用示例弱密码，请务必手工修改): " input_admin_password
+    read -p "请输入前端域名(如 https://your-domain.com): " input_cors_origin
+
+    if [ -z "$input_admin_password" ]; then
+        input_admin_password="change_admin_password"
+    fi
 
     cat > .env << EOF
 AI_API_KEY=${input_ai_key}
@@ -25,21 +31,21 @@ AI_MAX_TOKENS=8000
 AI_TIMEOUT_SECONDS=180
 CLAUDE_API_KEY=${input_claude_key}
 CLAUDE_API_URL=https://api.anthropic.com/v1/messages
-CLAUDE_MODEL=claude-sonnet-4-20250514
+CLAUDE_MODEL=claude-opus-4-7
 CLAUDE_MAX_TOKENS=8000
 CLAUDE_TIMEOUT_SECONDS=180
-DB_URL=jdbc:h2:file:./data/zodiac_dewey;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;AUTO_SERVER=TRUE
-DB_USER=sa
-DB_PASSWORD=
-DB_DRIVER=org.h2.Driver
-HIBERNATE_DIALECT=org.hibernate.dialect.H2Dialect
+DB_URL=jdbc:sqlite:./data/zodiac_dewey.db
+DB_DRIVER=org.sqlite.JDBC
+HIBERNATE_DIALECT=org.hibernate.community.dialect.SQLiteDialect
+HIBERNATE_USE_GET_GENERATED_KEYS=false
 JPA_DDL_AUTO=update
 RATELIMIT_DAILY_TOTAL=200
 RATELIMIT_PER_IP=3
 RATELIMIT_ENABLED=true
-CORS_ALLOWED_ORIGINS=*
+CORS_ALLOWED_ORIGINS=${input_cors_origin}
 SERVER_PORT=8080
-H2_CONSOLE_ENABLED=true
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=${input_admin_password}
 EOF
     echo -e "${GREEN}✅ .env 配置文件已生成${NC}"
 fi

@@ -12,7 +12,11 @@ import static org.mockito.Mockito.mock;
 class CompatibilityServiceTest {
 
     private final CompatibilityService service =
-            new CompatibilityService(mock(AiChatService.class), mock(SoulmateReportRepository.class));
+            new CompatibilityService(
+                    mock(AiChatService.class),
+                    mock(SoulmateReportRepository.class),
+                    new ZodiacScoringService()
+            );
 
     @Test
     void parseResponse_recoversMissingCommaJson() {
@@ -35,7 +39,7 @@ class CompatibilityServiceTest {
         CompatibilityResponse response = service.parseResponse(raw, request, triA, triB);
 
         assertEquals("火土平衡型", response.getRelationshipType());
-        assertEquals(78, response.getScore());
+        assertEquals(new ZodiacScoringService().calculateScore(request, triA, triB), response.getScore());
         assertTrue(response.getChapters().size() >= 6);
         assertTrue(response.getEssence().size() >= 6);
         assertEquals("第一章", response.getChapters().get(0).getContent());

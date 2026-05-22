@@ -11,26 +11,28 @@ services:
       - AI_MODEL=${AI_MODEL:-deepseek-chat}
       - AI_MAX_TOKENS=${AI_MAX_TOKENS:-8000}
       - AI_TIMEOUT_SECONDS=${AI_TIMEOUT_SECONDS:-180}
-      - DB_URL=${DB_URL:-jdbc:h2:file:/app/data/zodiac_dewey;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE}
-      - DB_USER=${DB_USER:-sa}
-      - DB_PASSWORD=${DB_PASSWORD:-}
-      - DB_DRIVER=${DB_DRIVER:-org.h2.Driver}
-      - HIBERNATE_DIALECT=${HIBERNATE_DIALECT:-org.hibernate.dialect.H2Dialect}
+      - DB_URL=${DB_URL:-jdbc:sqlite:/app/data/zodiac_dewey.db}
+      - DB_DRIVER=${DB_DRIVER:-org.sqlite.JDBC}
+      - HIBERNATE_DIALECT=${HIBERNATE_DIALECT:-org.hibernate.community.dialect.SQLiteDialect}
+      - HIBERNATE_USE_GET_GENERATED_KEYS=${HIBERNATE_USE_GET_GENERATED_KEYS:-false}
       - JPA_DDL_AUTO=${JPA_DDL_AUTO:-update}
       - RATELIMIT_DAILY_TOTAL=${RATELIMIT_DAILY_TOTAL:-200}
       - RATELIMIT_PER_IP=${RATELIMIT_PER_IP:-3}
       - RATELIMIT_ENABLED=${RATELIMIT_ENABLED:-true}
-      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-*}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-}
       - SERVER_PORT=8080
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-change_admin_password}
+      - ADMIN_SESSION_HOURS=${ADMIN_SESSION_HOURS:-12}
       - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
       - CLAUDE_API_URL=${CLAUDE_API_URL:-https://api.anthropic.com/v1/messages}
-      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-sonnet-4-5-20250929}
+      - CLAUDE_MODEL=${CLAUDE_MODEL:-claude-opus-4-7}
       - CLAUDE_MAX_TOKENS=${CLAUDE_MAX_TOKENS:-8000}
       - CLAUDE_TIMEOUT_SECONDS=${CLAUDE_TIMEOUT_SECONDS:-180}
       - AI_PROXY_HOST=${AI_PROXY_HOST:-}
       - AI_PROXY_PORT=${AI_PROXY_PORT:-0}
     volumes:
-      - zodiac_data:/app/data
+      - sqlite_data:/app/data
     networks:
       - zodiac-net
 
@@ -46,7 +48,7 @@ services:
       - zodiac-net
 
 volumes:
-  zodiac_data:
+  sqlite_data:
 
 networks:
   zodiac-net:

@@ -21,5 +21,5 @@ if [ -z "$AI_API_KEY" ]; then
 fi
 
 cd backend
-echo "Starting backend on http://localhost:${SERVER_PORT:-8080}"
+echo "Starting backend on http://localhost:${SERVER_PORT:-8080} (SQLite)"
 mvn spring-boot:run
