@@ -1,42 +1,19 @@
-# IDE
-.idea/
-.vscode/
-*.iml
-.DS_Store
-
-# Maven
-backend/target/
-backend/.mvn/
+# Backend build artifacts
+target/
+*.jar
 *.class
 
 # Logs
 *.log
-logs/
 
-# Env files(密钥不能进 Git!)
-.env
-.env.local
-*.env
-
-# Local runtime data
+# Database files
 data/
-backend/data/
 
-# QR source images (root level, not frontend/img/)
-alipay.jpg
-wechat.jpg
-
-# WorkBuddy
-.workbuddy/
-
-# Build output
-dist/
-build/
-out/
+# IDE
+.idea/
+*.iml
+.vscode/
 
 # OS
+.DS_Store
 Thumbs.db
-
-# Backup
-*.bak
-*~
