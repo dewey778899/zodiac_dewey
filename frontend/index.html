@@ -751,12 +751,17 @@
 
   /* ============ Payment Modal ============ */
   .pay-modal-overlay {
-    position: fixed; inset: 0;
+    position: fixed;
+    inset: 0;
     background: rgba(40, 25, 50, 0.7);
     backdrop-filter: blur(8px);
-    z-index: 1100;
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 3000;
     display: flex; align-items: center; justify-content: center;
     padding: 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     animation: fadeIn 0.3s;
   }
   .pay-modal {
@@ -764,7 +769,9 @@
     border-radius: 24px;
     max-width: 360px;
     width: 100%;
-    overflow: hidden;
+    max-height: min(92vh, 760px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     box-shadow: var(--shadow-deep);
   }
   .pay-modal-header {
@@ -836,7 +843,9 @@
     margin-bottom: 16px;
   }
   .pay-qr-wrapper {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 240px;
     height: 240px;
     border-radius: 16px;
@@ -848,7 +857,7 @@
   .pay-qr-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .pay-price {
@@ -906,6 +915,36 @@
   .pay-confirm-btn:active {
     transform: translateY(2px);
     box-shadow: 0 3px 10px rgba(155, 127, 199, 0.3);
+  }
+
+  body.modal-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  @media (max-width: 480px) {
+    .pay-modal-overlay {
+      align-items: flex-end;
+      padding: 16px 12px max(16px, env(safe-area-inset-bottom));
+    }
+    .pay-modal {
+      max-width: 100%;
+      max-height: calc(100dvh - 24px);
+      border-radius: 24px 24px 18px 18px;
+    }
+    .pay-modal-header {
+      padding: 20px 18px 12px;
+    }
+    .pay-modal-body {
+      padding: 0 18px 20px;
+    }
+    .pay-qr-wrapper {
+      width: min(250px, calc(100vw - 72px));
+      height: min(250px, calc(100vw - 72px));
+    }
+    .pay-steps {
+      padding: 14px 15px;
+    }
   }
 
   /* ============ Share Modal ============ */
@@ -1828,13 +1867,19 @@ function switchModel(model) {
 }
 
 function showPayModal() {
-  document.getElementById('pay-modal').classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  const payModal = document.getElementById('pay-modal');
+  payModal.scrollTop = 0;
+  payModal.classList.remove('hidden');
   recordAnalyticsEvent({ eventType: 'qr_modal_open' });
   recordAnalyticsEvent({ eventType: 'qr_view', channel: 'wechat' });
 }
 
 function hidePayModal() {
   document.getElementById('pay-modal').classList.add('hidden');
+  if (document.getElementById('value-modal').classList.contains('hidden')) {
+    document.body.classList.remove('modal-open');
+  }
 }
 
 // Model switcher click handlers
@@ -1885,11 +1930,17 @@ document.getElementById('pay-confirm-btn').addEventListener('click', () => {
 
 // Value proposition modal
 function showValueModal() {
-  document.getElementById('value-modal').classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  const valueModal = document.getElementById('value-modal');
+  valueModal.scrollTop = 0;
+  valueModal.classList.remove('hidden');
 }
 
 function hideValueModal() {
   document.getElementById('value-modal').classList.add('hidden');
+  if (document.getElementById('pay-modal').classList.contains('hidden')) {
+    document.body.classList.remove('modal-open');
+  }
 }
 
 // Value modal close
@@ -1918,7 +1969,7 @@ if (valueModalPayBtn) {
   valueModalPayBtn.addEventListener('click', () => {
     localStorage.setItem('zodiac_value_modal_seen', '1');
     hideValueModal();
-    showPayModal();
+    window.setTimeout(showPayModal, 60);
   });
 }
 
