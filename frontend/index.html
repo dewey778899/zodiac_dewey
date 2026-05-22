@@ -1322,7 +1322,7 @@
     <!-- 操作栏 -->
     <div class="action-bar">
       <div class="action-bar-title">— KEEP IT FOREVER —</div>
-      <div class="action-bar-sub">把这份独属于你们的报告珍藏下来</div>
+      <div class="action-bar-sub">珍藏报告，或直接分享给 TA</div>
       <div class="action-grid">
         <button class="action-btn primary" id="share-btn">
           <span class="action-btn-icon">📤</span>
@@ -1333,6 +1333,7 @@
           <span>下载完整报告</span>
         </button>
       </div>
+      <button class="restart-btn-full" id="copy-link-btn" style="border-style:solid;color:var(--lilac-deep);">🔗 复制链接，分享给朋友</button>
       <button class="restart-btn-full" id="restart-btn">为另一对再测一次</button>
     </div>
 
@@ -1357,7 +1358,7 @@
         <button class="modal-btn secondary" id="share-close">关闭</button>
         <button class="modal-btn primary" id="share-download">下载图片</button>
       </div>
-      <div class="modal-tip">下载后可转发到微信好友/朋友圈<br/>iOS 用户可长按图片直接保存</div>
+      <div class="modal-tip">支持直接分享到微信/钉钉/QQ<br/>若无法分享，将自动保存图片，请手动转发</div>
     </div>
   </div>
 </div>
@@ -2435,17 +2436,69 @@ $('share-btn').addEventListener('click', async () => {
 
 $('share-close').addEventListener('click', () => hide('share-modal'));
 
-$('share-download').addEventListener('click', () => {
+// ============ Web Share API Helper ============
+async function tryShareFile(dataUrl, filename, mimeType, title, text) {
+  try {
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const file = new File([blob], filename, { type: mimeType });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: title || '', text: text || '' });
+      return true;
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') return true;
+  }
+  return false;
+}
+
+function copyLink() {
+  const url = location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => showToast('链接已复制，快去分享吧')).catch(() => fallbackCopy(url));
+  } else {
+    fallbackCopy(url);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('链接已复制，快去分享吧'); }
+  catch(_) { showToast('复制失败，请手动复制地址栏链接'); }
+  document.body.removeChild(ta);
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.78);color:#fff;padding:10px 24px;border-radius:100px;font-size:13px;z-index:9999;pointer-events:none;animation:fadeIn .3s';
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; }, 1800);
+  setTimeout(() => t.remove(), 2200);
+}
+
+// --- 分享卡片：优先 Web Share API，降级下载 ---
+$('share-download').addEventListener('click', async () => {
   if (!window._shareImageData) return;
-  const link = document.createElement('a');
-  link.download = `灵魂合盘-${currentForm.personA.name}-${currentForm.personB.name}.png`;
-  link.href = window._shareImageData;
-  link.click();
+  const nameA = currentForm.personA.name, nameB = currentForm.personB.name;
+  const filename = `灵魂合盘-${nameA}-${nameB}.png`;
+  const shared = await tryShareFile(window._shareImageData, filename, 'image/png', '灵魂合盘', `快来看看${nameA}和${nameB}的灵魂合盘报告！`);
+  if (!shared) {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = window._shareImageData;
+    link.click();
+    showToast('图片已保存，可手动分享到微信/钉钉');
+  }
 });
 
 $('share-modal').addEventListener('click', (e) => {
   if (e.target.id === 'share-modal') hide('share-modal');
 });
+
+$('copy-link-btn').addEventListener('click', copyLink);
 
 // ============ PDF Generation (Canvas + jsPDF) ============
 // 把整份报告画到多张 canvas 上,再合成 PDF
@@ -2771,7 +2824,16 @@ $('pdf-btn').addEventListener('click', async () => {
       pdf.addImage(imgData, 'JPEG', 0, 0, pW, pH, undefined, 'MEDIUM');
     });
 
-    pdf.save(`灵魂合盘-${currentForm.personA.name}-${currentForm.personB.name}.pdf`);
+        const pdfBlob = pdf.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const pA = currentForm.personA.name, pB = currentForm.personB.name;
+    const pdfFilename = `灵魂合盘-${pA}-${pB}.pdf`;
+    const pdfShared = await tryShareFile(pdfUrl, pdfFilename, 'application/pdf', '灵魂合盘报告', `快来看${pA}和${pB}的灵魂合盘报告！`);
+    if (!pdfShared) {
+      pdf.save(pdfFilename);
+      showToast('PDF已保存，可手动分享到微信/钉钉');
+    }
+    URL.revokeObjectURL(pdfUrl);
   } catch (e) {
     alert('PDF 生成失败:' + e.message);
     console.error(e);
